@@ -610,31 +610,12 @@
         "ionic_radius_cation": {
           "value": 1.02,
           "unit": "Angstrom",
-          "notes": "Na+ radius, larger than Li+ (0.76 A)",
-          "reference": "Shannon 1976, Acta Cryst. A32, 751"
+          "notes": "Na+ ionic radius (6-coordinate), larger than Li+ (0.76 A)",
+          "reference": "Shannon 1976, Acta Cryst. A32, 751, DOI:10.1107/S0567739476001551"
         },
-        "lattice_energy": {
-          "value": 497,
-          "unit": "kJ/mol",
-          "notes": "Estimated ~10% lower than LiPF6 (553 kJ/mol) due to larger Na+ ionic radius",
-          "reference": "Estimated from ionic radius scaling; needs experimental verification"
-        },
-        "thermal_stability": {
-          "value": 100,
-          "unit": "C",
-          "notes": "Decomposition onset in EC/DMC, similar to LiPF6",
-          "reference": "Ponrouch et al. 2015"
-        },
-        "oxidation_stability": {
-          "value": 5.0,
-          "unit": "V vs Na/Na+",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 7.98,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:PC (1:1), 25C",
-          "reference": "Ponrouch et al. 2012, J. Power Sources 207, 28"
+        "notes": {
+          "conductivity_source": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B",
+          "description": "Benchmarked as one of the best-performing sodium salts in EC:PC mixtures"
         }
       }
     },
@@ -649,33 +630,9 @@
       "anion": "ClO4-",
       "battery_type": "sodium-ion",
       "properties": {
-        "lattice_energy": {
-          "value": 643,
-          "unit": "kJ/mol",
-          "notes": "Estimated from Born-Haber cycle calculations",
-          "reference": "Estimated; needs experimental verification"
-        },
-        "thermal_stability": {
-          "value": 130,
-          "unit": "C",
-          "notes": "Better thermal stability than NaPF6",
-          "reference": "Ponrouch et al. 2015"
-        },
-        "oxidation_stability": {
-          "value": 5.1,
-          "unit": "V vs Na/Na+",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 6.4,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:PC (1:1), 25C",
-          "reference": "Ponrouch et al. 2012"
-        },
-        "solubility": {
-          "value": "high",
-          "notes": "Highly soluble in carbonate solvents",
-          "reference": "Literature"
+        "notes": {
+          "conductivity_source": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B",
+          "description": "Tested alongside NaPF6 in EC:PC mixtures"
         }
       }
     },
@@ -690,28 +647,8 @@
       "anion": "TFSI-",
       "battery_type": "sodium-ion",
       "properties": {
-        "thermal_stability": {
-          "value": 350,
-          "unit": "C",
-          "notes": "Excellent thermal stability",
-          "reference": "Literature"
-        },
-        "oxidation_stability": {
-          "value": 4.5,
-          "unit": "V vs Na/Na+",
-          "notes": "Can corrode Al current collector above 4V",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 6.2,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:DMC (1:1), 25C",
-          "reference": "Ding et al. 2013, J. Electrochem. Soc. 160, A1894"
-        },
-        "dissociation_constant": {
-          "value": "high",
-          "notes": "Highly dissociated due to delocalized charge on anion",
-          "reference": "Literature"
+        "notes": {
+          "description": "Sodium analog of LiTFSI with similar anion properties; good thermal stability, some Al corrosion concerns above 4V"
         }
       }
     },
@@ -726,23 +663,8 @@
       "anion": "FSI-",
       "battery_type": "sodium-ion",
       "properties": {
-        "thermal_stability": {
-          "value": 180,
-          "unit": "C",
-          "reference": "Literature"
-        },
-        "oxidation_stability": {
-          "value": 5.2,
-          "unit": "V vs Na/Na+",
-          "notes": "Better Al compatibility than NaTFSI",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 9.7,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:DMC (1:1), 25C",
-          "notes": "Higher conductivity than NaTFSI",
-          "reference": "Ding et al. 2013"
+        "notes": {
+          "description": "Sodium analog of LiFSI; smaller anion than TFSI leading to higher conductivity and better Al compatibility"
         }
       }
     },
@@ -757,22 +679,8 @@
       "anion": "BF4-",
       "battery_type": "sodium-ion",
       "properties": {
-        "thermal_stability": {
-          "value": 148,
-          "unit": "C",
-          "reference": "Literature"
-        },
-        "oxidation_stability": {
-          "value": 4.8,
-          "unit": "V vs Na/Na+",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 3.5,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:DMC (1:1), 25C",
-          "notes": "Lower conductivity due to lower dissociation",
-          "reference": "Literature"
+        "notes": {
+          "description": "Sodium analog of LiBF4; lower conductivity due to smaller anion with less charge delocalization"
         }
       }
     },
@@ -787,26 +695,8 @@
       "anion": "CF3SO3-",
       "battery_type": "sodium-ion",
       "properties": {
-        "thermal_stability": {
-          "value": 254,
-          "unit": "C",
-          "reference": "Literature"
-        },
-        "oxidation_stability": {
-          "value": 4.6,
-          "unit": "V vs Na/Na+",
-          "reference": "Literature"
-        },
-        "typical_conductivity": {
-          "value": 4.8,
-          "unit": "mS/cm",
-          "conditions": "1M in EC:DMC (1:1), 25C",
-          "reference": "Literature"
-        },
-        "cost": {
-          "value": "low",
-          "notes": "Cost-effective alternative to NaTFSI",
-          "reference": "Literature"
+        "notes": {
+          "description": "Cost-effective sodium salt option; lower charge delocalization than TFSI"
         }
       }
     }
@@ -817,24 +707,20 @@
       "Li+": 0.76,
       "Na+": 1.02,
       "unit": "Angstrom",
-      "impact": "Larger Na+ leads to lower lattice energies, higher solubility, but slower diffusion"
-    },
-    "desolvation_energy": {
-      "Li+": "higher",
-      "Na+": "lower",
-      "impact": "Na+ desolvates more easily, potentially faster charge transfer kinetics"
-    },
-    "sei_formation": {
-      "notes": "Na-SEI typically less stable than Li-SEI in carbonate solvents; ether solvents often preferred for Na"
+      "impact": "Larger Na+ leads to lower lattice energies and different solvation behavior",
+      "reference": "Shannon 1976, Acta Cryst. A32, 751, DOI:10.1107/S0567739476001551"
     },
     "preferred_solvents": {
       "Li": ["EC", "DMC", "EMC", "DEC"],
-      "Na": ["EC", "PC", "DME", "Diglyme", "Tetraglyme"]
+      "Na": ["EC", "PC", "DME", "glymes"],
+      "notes": "EC:PC mixtures commonly used for Na-ion"
     },
-    "references": [
-      "Ponrouch et al. 2015, Energy Environ. Sci. 8, 2361-2373",
-      "Ding et al. 2013, J. Electrochem. Soc. 160, A1894",
-      "Komaba et al. 2011, Electrochem. Commun. 13, 355"
+    "key_references": [
+      {
+        "citation": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572",
+        "doi": "10.1039/C2EE22258B",
+        "topic": "Systematic comparison of Na electrolytes in EC:PC"
+      }
     ]
   }
 }

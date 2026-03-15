@@ -85,9 +85,10 @@ st.markdown("Explore molecules, salts, and their relationships. **Click on a rel
 st.sidebar.header("Filters")
 
 entity_types = st.sidebar.multiselect(
-    "Entity Types",
+    "Filter by category",
     ["solvent", "salt", "molecule", "interphase"],
-    default=["solvent", "salt"]
+    default=["solvent", "salt", "molecule", "interphase"],
+    help="All items are molecules; these categories help filter by function"
 )
 
 search_query = st.sidebar.text_input(
@@ -132,11 +133,20 @@ colors = {
     "interphase": "#E67E22", # Orange
 }
 
+# Create ID mapping to avoid agraph treating names as file paths
+id_to_display = {}
+display_to_id = {}
+
 for mol in filtered_molecules:
+    # Use a safe node ID format (prefix with 'n_' to avoid path interpretation)
+    safe_id = f"n_{hash(mol['id']) % 100000}"
+    id_to_display[mol["id"]] = safe_id
+    display_to_id[safe_id] = mol["id"]
+
     # Note: Don't use 'title' as it causes double-click navigation errors
     nodes.append(Node(
-        id=mol["id"],
-        label=mol["id"],
+        id=safe_id,
+        label=mol["name"] if mol.get("name") else mol["id"],
         size=25,
         color=colors.get(mol["type"], "#888888"),
         symbolType="circle",
@@ -151,8 +161,8 @@ for rel in relations:
         edge_id = f"{rel['source']}--{rel['type']}--{rel['target']}"
         edge_color = "#FF6B6B" if rel["type"] == "usedWith" else "#888888"
         edges.append(Edge(
-            source=rel["source"],
-            target=rel["target"],
+            source=id_to_display[rel["source"]],
+            target=id_to_display[rel["target"]],
             label=rel["type"],
             color=edge_color,
         ))
@@ -190,9 +200,9 @@ with col1:
     if nodes:
         return_value = agraph(nodes=nodes, edges=edges, config=config)
 
-        # Handle node selection from graph click
-        if return_value:
-            st.session_state['selected_node'] = return_value
+        # Handle node selection from graph click (map back from safe ID)
+        if return_value and return_value in display_to_id:
+            st.session_state['selected_node'] = display_to_id[return_value]
     else:
         st.info("No molecules match the current filters.")
 
@@ -285,14 +295,24 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Molecule Details")
 
-    mol_options = [m["id"] for m in filtered_molecules]
-    if mol_options:
+    # Build options with display names
+    mol_options = [(m["id"], m.get("name", m["id"])) for m in filtered_molecules]
+    mol_id_to_name = {m[0]: m[1] for m in mol_options}
+    mol_ids = [m[0] for m in mol_options]
+
+    if mol_ids:
         # Use clicked node if available
         default_idx = 0
-        if 'selected_node' in st.session_state and st.session_state['selected_node'] in mol_options:
-            default_idx = mol_options.index(st.session_state['selected_node'])
+        if 'selected_node' in st.session_state and st.session_state['selected_node'] in mol_ids:
+            default_idx = mol_ids.index(st.session_state['selected_node'])
 
-        selected_mol = st.selectbox("Select molecule", mol_options, index=default_idx, key="mol_select")
+        selected_mol = st.selectbox(
+            "Select molecule",
+            mol_ids,
+            index=default_idx,
+            format_func=lambda x: mol_id_to_name.get(x, x),
+            key="mol_select"
+        )
 
         if selected_mol:
             mol_data = next((m for m in molecules if m["id"] == selected_mol), None)
@@ -327,7 +347,7 @@ with col1:
 with col2:
     st.subheader("Connections")
 
-    if mol_options and selected_mol:
+    if mol_ids and selected_mol:
         related = []
         for rel in relations:
             if rel["source"] == selected_mol:

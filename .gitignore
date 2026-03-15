@@ -25,3 +25,6 @@ Thumbs.db
 data/raw/libe_dataset.json
 data/output/knowledge_graph*.json
 data/output/hypotheses*.json
+
+# But include gzipped versions (small enough for GitHub)
+!data/output/*.json.gz

@@ -1,5 +1,6 @@
 """Data loading utilities for the Streamlit app."""
 
+import gzip
 import json
 from pathlib import Path
 import pandas as pd
@@ -11,11 +12,19 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 @st.cache_data
 def load_full_kg():
-    """Load the full knowledge graph."""
+    """Load the full knowledge graph (supports gzipped files)."""
+    # Try gzipped version first (for deployment)
+    kg_path_gz = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v3.json.gz"
+    if kg_path_gz.exists():
+        with gzip.open(kg_path_gz, 'rt', encoding='utf-8') as f:
+            return json.load(f)
+
+    # Fall back to uncompressed (for local dev)
     kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v3.json"
     if kg_path.exists():
         with open(kg_path) as f:
             return json.load(f)
+
     return None
 
 
@@ -184,6 +193,32 @@ def get_data_sources():
     ]
 
 
+def _infer_molecule_type(name, smiles=""):
+    """Infer molecule type from name and SMILES."""
+    name_lower = name.lower()
+    smiles_lower = smiles.lower() if smiles else ""
+
+    # Check for salts (Li/Na compounds)
+    salt_indicators = ["lithium", "sodium", "lipf6", "libf4", "litfsi", "lifsi",
+                       "napf6", "nabf4", "natfsi", "nafsi", "liclo4", "naclo4"]
+    if any(ind in name_lower for ind in salt_indicators):
+        return "salt"
+    if name.startswith(("Li", "Na")) and any(c.isupper() for c in name[2:4]):
+        return "salt"
+    if "[Li" in smiles or "[Na" in smiles:
+        return "salt"
+
+    # Check for common solvents
+    solvent_indicators = ["carbonate", "ether", "sulfoxide", "sulfone",
+                          "acetonitrile", "tetrahydrofuran", "dioxolane",
+                          "glyme", "lactone", "furan"]
+    if any(ind in name_lower for ind in solvent_indicators):
+        return "solvent"
+
+    # Default to molecule
+    return "molecule"
+
+
 @st.cache_data
 def get_all_molecules_from_kg():
     """Get all molecules from the KG with their types."""
@@ -193,17 +228,20 @@ def get_all_molecules_from_kg():
 
     molecules = []
 
-    # Add molecules
+    # Add molecules with inferred types
     for mol_id, mol in kg.get("molecules", {}).items():
+        name = mol.get("name", mol_id[:12])
+        smiles = mol.get("smiles", "")
+        mol_type = _infer_molecule_type(name, smiles)
         molecules.append({
             "id": mol_id,
-            "name": mol.get("name", mol_id[:12]),
-            "smiles": mol.get("smiles", ""),
-            "type": "molecule",
+            "name": name,
+            "smiles": smiles,
+            "type": mol_type,
             "source": "molecules",
         })
 
-    # Add solvents
+    # Add solvents (if KG has separate solvents dict)
     for sol_id, sol in kg.get("solvents", {}).items():
         molecules.append({
             "id": sol_id,
@@ -213,7 +251,7 @@ def get_all_molecules_from_kg():
             "source": "solvents",
         })
 
-    # Add salts
+    # Add salts (if KG has separate salts dict)
     for salt_id, salt in kg.get("salts", {}).items():
         molecules.append({
             "id": salt_id,
@@ -288,7 +326,9 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
         query_lower = search_query.lower()
         all_molecules = [
             m for m in all_molecules
-            if query_lower in m["name"].lower() or query_lower in m.get("smiles", "").lower()
+            if (query_lower in m["name"].lower()
+                or query_lower in m.get("smiles", "").lower()
+                or query_lower in m.get("type", "").lower())
         ]
 
     # Sort by name and limit
