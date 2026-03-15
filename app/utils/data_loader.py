@@ -691,6 +691,32 @@ def get_relations_for_graph(molecule_ids=None):
             r for r in relations
             if r["source"] in expanded_ids and r["target"] in expanded_ids
         ]
-        return filtered
+
+        # Normalize relation IDs to match the input molecule_ids
+        # This ensures the graph can find nodes for the edges
+        def normalize_id(rel_id):
+            """Map relation ID to matching molecule_id."""
+            if rel_id in molecule_ids:
+                return rel_id
+            # Check if this ID maps to something in molecule_ids
+            # e.g., UUID -> abbreviation
+            name = id_to_name.get(rel_id, "")
+            if name in molecule_ids:
+                return name
+            # Check synonyms
+            for mol_id in molecule_ids:
+                if name_to_id.get(mol_id) == rel_id:
+                    return mol_id
+            return rel_id  # Return as-is if no match
+
+        normalized = []
+        for r in filtered:
+            normalized.append({
+                "source": normalize_id(r["source"]),
+                "target": normalize_id(r["target"]),
+                "type": r["type"],
+            })
+
+        return normalized
 
     return relations
