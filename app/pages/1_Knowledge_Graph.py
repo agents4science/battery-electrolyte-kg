@@ -316,7 +316,11 @@ with col2:
             st.markdown("**All Connections in KG:**")
 
             # Get all relations for this molecule from the full KG
-            all_mol_relations = get_relations_for_molecule(selected_mol_id)
+            # Pass both ID and name to handle both KG data and hardcoded compounds
+            all_mol_relations = get_relations_for_molecule(
+                selected_mol_id,
+                molecule_name=selected_mol_data.get('name')
+            )
 
             if all_mol_relations:
                 # Group by relation type
