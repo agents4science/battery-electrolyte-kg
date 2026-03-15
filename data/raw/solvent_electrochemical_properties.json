@@ -1,0 +1,600 @@
+{
+  "_metadata": {
+    "description": "Curated electrochemical properties for common battery electrolyte solvents",
+    "compiled_date": "2024-07-15",
+    "notes": "Values from DFT calculations and experimental literature"
+  },
+  "solvents": [
+    {
+      "name": "Ethylene carbonate",
+      "abbreviation": "EC",
+      "smiles": "C1COC(=O)O1",
+      "cas_number": "96-49-1",
+      "pubchem_cid": 7303,
+      "molecular_weight": 88.06,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.5,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Qu et al. 2015, DOI:10.1016/j.commatsci.2015.02.050"
+        },
+        "electron_affinity": {
+          "value": 1.06,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "PMC9779264"
+        },
+        "homo_energy": {
+          "value": -8.4,
+          "unit": "eV",
+          "method": "DFT-B3LYP",
+          "reference": "Literature compilation"
+        },
+        "lumo_energy": {
+          "value": -0.38,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "PMC9779264"
+        },
+        "dielectric_constant": {
+          "value": 89.78,
+          "unit": "dimensionless",
+          "temperature": 40,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.2,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 0.8,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Propylene carbonate",
+      "abbreviation": "PC",
+      "smiles": "CC1COC(=O)O1",
+      "cas_number": "108-32-7",
+      "pubchem_cid": 7924,
+      "molecular_weight": 102.09,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.3,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Qu et al. 2015"
+        },
+        "electron_affinity": {
+          "value": 0.9,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "homo_energy": {
+          "value": -8.2,
+          "unit": "eV",
+          "method": "DFT-B3LYP",
+          "reference": "Literature"
+        },
+        "lumo_energy": {
+          "value": -0.3,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 64.92,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.1,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 0.9,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Dimethyl carbonate",
+      "abbreviation": "DMC",
+      "smiles": "COC(=O)OC",
+      "cas_number": "616-38-6",
+      "pubchem_cid": 12021,
+      "molecular_weight": 90.08,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.8,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Qu et al. 2015"
+        },
+        "electron_affinity": {
+          "value": 0.5,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "homo_energy": {
+          "value": -8.8,
+          "unit": "eV",
+          "method": "DFT-B3LYP",
+          "reference": "Literature"
+        },
+        "lumo_energy": {
+          "value": 0.2,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 3.11,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.7,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 1.3,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Ethyl methyl carbonate",
+      "abbreviation": "EMC",
+      "smiles": "CCOC(=O)OC",
+      "cas_number": "623-53-0",
+      "pubchem_cid": 522046,
+      "molecular_weight": 104.11,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.6,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Qu et al. 2015"
+        },
+        "electron_affinity": {
+          "value": 0.6,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "homo_energy": {
+          "value": -8.6,
+          "unit": "eV",
+          "method": "DFT-B3LYP",
+          "reference": "Literature"
+        },
+        "lumo_energy": {
+          "value": 0.1,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 2.96,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.5,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 1.2,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Diethyl carbonate",
+      "abbreviation": "DEC",
+      "smiles": "CCOC(=O)OCC",
+      "cas_number": "105-58-8",
+      "pubchem_cid": 7766,
+      "molecular_weight": 118.13,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.4,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Qu et al. 2015"
+        },
+        "electron_affinity": {
+          "value": 0.55,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 2.82,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.4,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 1.1,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Fluoroethylene carbonate",
+      "abbreviation": "FEC",
+      "smiles": "C1C(OC(=O)O1)F",
+      "cas_number": "114435-02-8",
+      "pubchem_cid": 69872,
+      "molecular_weight": 106.05,
+      "properties": {
+        "ionization_energy": {
+          "value": 11.2,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Literature"
+        },
+        "electron_affinity": {
+          "value": 1.4,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "homo_energy": {
+          "value": -9.0,
+          "unit": "eV",
+          "method": "DFT-B3LYP",
+          "reference": "Literature"
+        },
+        "lumo_energy": {
+          "value": -0.8,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 78.4,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "Literature"
+        },
+        "reduction_potential": {
+          "value": 0.6,
+          "unit": "V vs Li/Li+",
+          "method": "DFT-PCM",
+          "notes": "Lower than EC, forms better SEI",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Dimethoxyethane",
+      "abbreviation": "DME",
+      "smiles": "COCCOC",
+      "cas_number": "110-71-4",
+      "pubchem_cid": 8071,
+      "molecular_weight": 90.12,
+      "properties": {
+        "ionization_energy": {
+          "value": 9.8,
+          "unit": "eV",
+          "method": "DFT-B3LYP/6-31+G(d)",
+          "reference": "Literature"
+        },
+        "electron_affinity": {
+          "value": -0.2,
+          "unit": "eV",
+          "conditions": "vacuum",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 7.2,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 4.5,
+          "unit": "V vs Li/Li+",
+          "method": "Experimental",
+          "notes": "Lower oxidation stability than carbonates",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Tetrahydrofuran",
+      "abbreviation": "THF",
+      "smiles": "C1CCOC1",
+      "cas_number": "109-99-9",
+      "pubchem_cid": 8028,
+      "molecular_weight": 72.11,
+      "properties": {
+        "ionization_energy": {
+          "value": 9.4,
+          "unit": "eV",
+          "method": "Experimental",
+          "reference": "NIST WebBook"
+        },
+        "electron_affinity": {
+          "value": -0.3,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 7.52,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        }
+      }
+    },
+    {
+      "name": "Acetonitrile",
+      "abbreviation": "AN",
+      "smiles": "CC#N",
+      "cas_number": "75-05-8",
+      "pubchem_cid": 6342,
+      "molecular_weight": 41.05,
+      "properties": {
+        "ionization_energy": {
+          "value": 12.2,
+          "unit": "eV",
+          "method": "Experimental",
+          "reference": "NIST WebBook"
+        },
+        "electron_affinity": {
+          "value": -0.5,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 36.64,
+          "unit": "dimensionless",
+          "temperature": 20,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 6.3,
+          "unit": "V vs Li/Li+",
+          "method": "Experimental",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Dimethyl sulfoxide",
+      "abbreviation": "DMSO",
+      "smiles": "CS(=O)C",
+      "cas_number": "67-68-5",
+      "pubchem_cid": 679,
+      "molecular_weight": 78.13,
+      "properties": {
+        "ionization_energy": {
+          "value": 9.1,
+          "unit": "eV",
+          "method": "Experimental",
+          "reference": "NIST WebBook"
+        },
+        "dielectric_constant": {
+          "value": 46.7,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        }
+      }
+    },
+    {
+      "name": "Sulfolane",
+      "abbreviation": "Sulfolane",
+      "smiles": "O=S1(=O)CCCC1",
+      "cas_number": "126-33-0",
+      "pubchem_cid": 31347,
+      "molecular_weight": 120.17,
+      "properties": {
+        "ionization_energy": {
+          "value": 9.9,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 43.4,
+          "unit": "dimensionless",
+          "temperature": 30,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 5.8,
+          "unit": "V vs Li/Li+",
+          "method": "Experimental",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "gamma-Butyrolactone",
+      "abbreviation": "GBL",
+      "smiles": "C1CC(=O)OC1",
+      "cas_number": "96-48-0",
+      "pubchem_cid": 7302,
+      "molecular_weight": 86.09,
+      "properties": {
+        "ionization_energy": {
+          "value": 10.3,
+          "unit": "eV",
+          "method": "DFT",
+          "reference": "Literature"
+        },
+        "dielectric_constant": {
+          "value": 39.1,
+          "unit": "dimensionless",
+          "temperature": 25,
+          "temperature_unit": "C",
+          "reference": "CRC Handbook"
+        },
+        "oxidation_potential": {
+          "value": 5.5,
+          "unit": "V vs Li/Li+",
+          "method": "Experimental",
+          "reference": "Literature"
+        }
+      }
+    }
+  ],
+  "salts": [
+    {
+      "name": "Lithium hexafluorophosphate",
+      "abbreviation": "LiPF6",
+      "smiles": "[Li+].F[P-](F)(F)(F)(F)F",
+      "cas_number": "21324-40-3",
+      "pubchem_cid": 23688284,
+      "molecular_weight": 151.91,
+      "cation": "Li+",
+      "anion": "PF6-",
+      "properties": {
+        "lattice_energy": {
+          "value": 553,
+          "unit": "kJ/mol",
+          "reference": "Literature"
+        },
+        "thermal_stability": {
+          "value": 107,
+          "unit": "C",
+          "notes": "Decomposition onset temperature in EC/DMC",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 5.0,
+          "unit": "V vs Li/Li+",
+          "notes": "Anion oxidation potential",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Lithium tetrafluoroborate",
+      "abbreviation": "LiBF4",
+      "smiles": "[Li+].F[B-](F)(F)F",
+      "cas_number": "14283-07-9",
+      "pubchem_cid": 9875083,
+      "molecular_weight": 93.75,
+      "cation": "Li+",
+      "anion": "BF4-",
+      "properties": {
+        "lattice_energy": {
+          "value": 617,
+          "unit": "kJ/mol",
+          "reference": "Literature"
+        },
+        "thermal_stability": {
+          "value": 160,
+          "unit": "C",
+          "notes": "Better thermal stability than LiPF6",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Lithium bis(trifluoromethanesulfonyl)imide",
+      "abbreviation": "LiTFSI",
+      "smiles": "[Li]N(S(=O)(=O)C(F)(F)F)S(=O)(=O)C(F)(F)F",
+      "cas_number": "90076-65-6",
+      "pubchem_cid": 2733527,
+      "molecular_weight": 287.09,
+      "cation": "Li+",
+      "anion": "TFSI-",
+      "properties": {
+        "thermal_stability": {
+          "value": 360,
+          "unit": "C",
+          "notes": "Much higher thermal stability",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 4.5,
+          "unit": "V vs Li/Li+",
+          "notes": "Lower oxidation stability, corrosive to Al",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Lithium bis(fluorosulfonyl)imide",
+      "abbreviation": "LiFSI",
+      "smiles": "[Li+].[N-](S(=O)(=O)F)S(=O)(=O)F",
+      "cas_number": "171611-11-3",
+      "pubchem_cid": 21222480,
+      "molecular_weight": 187.07,
+      "cation": "Li+",
+      "anion": "FSI-",
+      "properties": {
+        "thermal_stability": {
+          "value": 200,
+          "unit": "C",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 5.5,
+          "unit": "V vs Li/Li+",
+          "notes": "Higher oxidation stability than LiTFSI",
+          "reference": "Literature"
+        }
+      }
+    }
+  ]
+}

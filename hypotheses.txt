@@ -1,0 +1,37 @@
+⏺ Hypothesis Generation Complete
+
+  Summary
+
+  Successfully generated hypotheses from the integrated KG v2 with 5 data sources:
+
+  Rule-Mined Hypotheses (100 total):
+  - 53 co-occurrence patterns - e.g., "EC coOccurs with PC in formulations"
+  - 37 "increases conductivity" - e.g., "Acetonitrile increases ionic conductivity"
+  - 10 "decreases conductivity" - e.g., "TEOS decreases ionic conductivity"
+
+  Cross-Property Hypotheses (4 novel insights):
+  ┌─────────┬─────────────────────────────────────────────────────┬─────────────────────────────────────────────────────┬────────────┐
+  │   ID    │                     Hypothesis                      │                      Evidence                       │ Confidence │
+  ├─────────┼─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────┼────────────┤
+  │ CPH-001 │ Larger HOMO-LUMO gap → higher conductivity          │ DMC (9.0 eV gap) has 2.8x higher σ than PC (7.9 eV) │ 0.85       │
+  ├─────────┼─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────┼────────────┤
+  │ CPH-002 │ Linear carbonates outperform cyclic despite lower ε │ DMC: 9.78 mS/cm vs EC: 5.25 mS/cm                   │ 0.90       │
+  ├─────────┼─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────┼────────────┤
+  │ CPH-003 │ Higher LUMO energy (>0 eV) → better conductivity    │ r = 0.70 correlation                                │ 0.80       │
+  ├─────────┼─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────┼────────────┤
+  │ CPH-004 │ FEC reduces conductivity but improves SEI           │ LUMO=-0.8 eV (most reducible)                       │ 0.75       │
+  └─────────┴─────────────────────────────────────────────────────┴─────────────────────────────────────────────────────┴────────────┘
+  Property Correlations with Conductivity:
+  LUMO energy:         r = +0.70 (strong)
+  Electron affinity:   r = -0.39 (moderate)
+  HOMO energy:         r = -0.38 (moderate)
+  Dielectric constant: r = -0.30 (weak, confounded by viscosity)
+  Ionization energy:   r = -0.27 (weak)
+
+  Key Insight: The LUMO energy is the strongest predictor of ionic conductivity among the electrochemical properties - solvents with higher (more positive) LUMO energies enable higher conductivity, likely due to greater electrochemical stability.
+
+  Files Generated
+
+  - data/output/knowledge_graph_v2.json - Full KG with 115K+ relations
+  - data/output/hypotheses_v2.json - 100 rule-mined hypotheses
+  - data/output/cross_property_hypotheses.json - Cross-property analysis

@@ -1,0 +1,50 @@
+{
+  "kg_stats": {
+    "version": "0.1.0",
+    "num_molecules": 23370,
+    "num_solvents": 0,
+    "num_salts": 0,
+    "num_additives": 0,
+    "num_formulations": 109,
+    "num_measurements": 44280,
+    "num_interphase_species": 200,
+    "num_sources": 3,
+    "num_methods": 2,
+    "num_property_types": 14,
+    "num_relations": 83951,
+    "num_hypotheses": 15,
+    "num_hypotheses_validated": 0,
+    "provenance_completeness": 1.5303801459327988
+  },
+  "hypothesis": {
+    "rule_mining": {
+      "num_patterns": 3,
+      "num_amount_patterns": 3,
+      "num_co_occurrence_rules": 12,
+      "num_threshold_rules": 0
+    },
+    "num_proposed": 15,
+    "num_novel": 15
+  },
+  "summary": {
+    "total_hypotheses": 15,
+    "by_status": {
+      "proposed": 15,
+      "under_evaluation": 0,
+      "validated": 0,
+      "rejected": 0,
+      "inconclusive": 0
+    },
+    "by_source": {
+      "kg_embedding": 0,
+      "rule_mining": 15,
+      "gnn_completion": 0,
+      "abduction": 0,
+      "human": 0,
+      "llm": 0
+    },
+    "num_novel": 15,
+    "num_batches": 1,
+    "avg_confidence": 0.8225841789056324
+  }
+}

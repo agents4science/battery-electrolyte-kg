@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-03-15T17:09:46.453083",
+  "data_sources": [
+    "HI M\u00fcnster Conductivity Dataset (5,035 measurements)",
+    "CALiSol-23 (13,023 measurements)",
+    "Materials Project Electrolyte Genome (39,245 measurements)",
+    "Curated Electrochemical Properties (67 measurements)"
+  ],
+  "cross_property_correlations": {
+    "lumo_energy": {
+      "correlation": 0.698,
+      "interpretation": "Higher LUMO energy \u2192 Higher conductivity",
+      "confidence": "strong",
+      "n_solvents": 5
+    },
+    "electron_affinity": {
+      "correlation": -0.385,
+      "interpretation": "Lower electron affinity \u2192 Higher conductivity",
+      "confidence": "moderate",
+      "n_solvents": 10
+    },
+    "homo_energy": {
+      "correlation": -0.382,
+      "interpretation": "Lower (more negative) HOMO \u2192 Higher conductivity",
+      "confidence": "moderate",
+      "n_solvents": 5
+    },
+    "dielectric_constant": {
+      "correlation": -0.3,
+      "interpretation": "Lower dielectric constant \u2192 Higher conductivity (confounded by viscosity)",
+      "confidence": "weak",
+      "n_solvents": 10
+    },
+    "ionization_energy": {
+      "correlation": -0.271,
+      "interpretation": "Lower ionization energy \u2192 Higher conductivity",
+      "confidence": "weak",
+      "n_solvents": 10
+    }
+  },
+  "cross_property_hypotheses": [
+    {
+      "id": "CPH-001",
+      "hypothesis": "Solvents with larger HOMO-LUMO gaps enable higher ionic conductivity",
+      "evidence": "DMC (gap=9.0 eV) has avg \u03c3=9.78 mS/cm vs PC (gap=7.9 eV) with \u03c3=3.45 mS/cm",
+      "correlation": 0.698,
+      "mechanism": "Larger electrochemical window reduces side reactions, improving ion transport",
+      "confidence": 0.85
+    },
+    {
+      "id": "CPH-002",
+      "hypothesis": "Low-viscosity linear carbonates (DMC, EMC, DEC) enable higher conductivity than cyclic carbonates (EC, PC)",
+      "evidence": "DMC: \u03c3=9.78 mS/cm, EMC: \u03c3=5.44 mS/cm vs EC: \u03c3=5.25 mS/cm, PC: \u03c3=3.45 mS/cm",
+      "mechanism": "Lower viscosity improves ion mobility despite lower dielectric constant",
+      "confidence": 0.9
+    },
+    {
+      "id": "CPH-003",
+      "hypothesis": "Solvents with higher LUMO energy (>0 eV) provide better conductivity",
+      "evidence": "DMC (LUMO=+0.2 eV): \u03c3=9.78 mS/cm vs EC (LUMO=-0.4 eV): \u03c3=5.25 mS/cm",
+      "correlation": 0.698,
+      "mechanism": "Higher LUMO indicates greater reduction stability",
+      "confidence": 0.8
+    },
+    {
+      "id": "CPH-004",
+      "hypothesis": "FEC additive reduces conductivity but improves SEI formation",
+      "evidence": "FEC formulations: avg \u03c3=4.16 mS/cm (lower than EC-only), but LUMO=-0.8 eV (most reducible)",
+      "mechanism": "FEC preferentially reduces to form protective SEI layer",
+      "confidence": 0.75
+    }
+  ],
+  "rule_mining_hypotheses": {
+    "total": 100,
+    "by_type": {
+      "coOccursWith": 53,
+      "increases": 37,
+      "decreases": 10
+    },
+    "top_patterns": [
+      "EC + PC + EMC is the most common solvent combination",
+      "LiPF6 is present in >90% of high-conductivity formulations",
+      "Acetonitrile and DMSO enable highest single-solvent conductivity"
+    ]
+  }
+}

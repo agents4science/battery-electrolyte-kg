@@ -1,0 +1,45 @@
+  Knowledge Graph v2 Statistics
+  ┌────────────────────┬─────────┐
+  │       Metric       │  Count  │
+  ├────────────────────┼─────────┤
+  │ Molecules          │ 23,421  │
+  ├────────────────────┼─────────┤
+  │ Solvents           │ 41      │
+  ├────────────────────┼─────────┤
+  │ Salts              │ 14      │
+  ├────────────────────┼─────────┤
+  │ Formulations       │ 6,134   │
+  ├────────────────────┼─────────┤
+  │ Measurements       │ 57,370  │
+  ├────────────────────┼─────────┤
+  │ Interphase Species │ 200     │
+  ├────────────────────┼─────────┤
+  │ Relations          │ 115,807 │
+  ├────────────────────┼─────────┤
+  │ Sources            │ 5       │
+  └────────────────────┴─────────┘
+  Data Sources Integrated
+
+  1. HI Münster Conductivity Dataset - 109 formulations, 5,035 measurements
+  2. LIBE Dataset - 200 interphase species
+  3. Materials Project Electrolyte Genome - 23,366 molecules, 39,245 measurements (IE/EA)
+  4. CALiSol-23 (NEW) - 6,025 formulations, 13,023 measurements (conductivity)
+  5. Curated Electrochemical Properties (NEW) - 67 measurements (IE, EA, HOMO, LUMO, dielectric constant)
+
+  Cross-Links Created
+
+  The curated properties ingestor matched molecules by SMILES and created:
+  - 12 solvents matched (EC, PC, DMC, EMC, DEC, FEC, DME, THF, AN, DMSO, Sulfolane, GBL)
+  - 4 salts matched (LiPF6, LiBF4, LiTFSI, LiFSI)
+  - 5 SAME_AS relations linking molecules across datasets
+
+  Files Created
+
+  - src/ingestion/calisol.py - CALiSol-23 ingestor
+  - src/ingestion/curated_properties.py - Curated properties ingestor
+  - data/raw/calisol23_dataset.csv - 13,825 conductivity data points
+  - data/raw/calisol23_smiles.csv - SMILES for 50 compounds
+  - data/raw/solvent_electrochemical_properties.json - Curated properties for 12 solvents and 4 salts
+  - data/output/knowledge_graph_v2.json - Combined KG
+
+  The KG now has meaningful cross-links between conductivity data and electrochemical properties through the matched solvents. Formulations containing EC, PC, DMC, EMC now have associated ionization energies, electron affinities, HOMO/LUMO energies, and dielectric constants.

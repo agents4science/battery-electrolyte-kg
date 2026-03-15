@@ -1,0 +1,27 @@
+# API keys and secrets
+API_KEY
+*.env
+.env*
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data files (exceed GitHub 100MB limit)
+data/raw/libe_dataset.json
+data/output/knowledge_graph*.json
+data/output/hypotheses*.json

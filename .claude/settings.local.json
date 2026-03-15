@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(textutil -convert txt -stdout:*)",
+      "WebSearch",
+      "Bash(pip install pandas numpy scikit-learn pydantic requests tqdm networkx)",
+      "Bash(python run_pipeline.py:*)",
+      "Bash(python -m src.pipeline:*)",
+      "WebFetch(domain:figshare.com)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "WebFetch(domain:cthoyt.com)",
+      "WebFetch(domain:knowledgebase.nfdi4chem.de)",
+      "WebFetch(domain:api.materialsproject.org)",
+      "WebFetch(domain:next-gen.materialsproject.org)",
+      "WebFetch(domain:docs.materialsproject.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:matsci.org)",
+      "Bash(pip install mp-api)",
+      "Bash(export MP_API_KEY=\"ZPfQNUqBjRaQZPg1uKry36vr3jEOcvvd\")",
+      "Bash(python3:*)",
+      "WebFetch(domain:www.nature.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:zenodo.org)",
+      "Bash(cat:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh org list:*)",
+      "Bash(gh api:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
