@@ -477,60 +477,101 @@ def get_relations_for_graph(molecule_ids=None):
 
     Args:
         molecule_ids: Set of molecule IDs to filter relations (only show relations between these)
+
+    Returns relations between molecules including:
+    - KG relations (sameAs, decomposesTo)
+    - Common solvent-salt pairings (usedWith)
+    - Solvent co-occurrence patterns (coOccursWith)
     """
+    all_molecules = get_all_molecules_from_kg()
+
+    # Build lookup: name/synonym -> molecule ID
+    name_to_id = {}
+    id_to_name = {}
+    for mol in all_molecules:
+        mol_id = mol["id"]
+        mol_name = mol.get("name", "")
+        id_to_name[mol_id] = mol_name
+        name_to_id[mol_name] = mol_id
+        # Also map synonyms
+        for syn in mol.get("synonyms", []):
+            name_to_id[syn] = mol_id
+
+    # Also add hardcoded compounds
+    for abbrev, full_name in COMPOUND_NAMES.items():
+        if abbrev not in name_to_id:
+            name_to_id[abbrev] = abbrev
+            id_to_name[abbrev] = full_name
+
+    relations = []
+
+    # Common solvent-salt pairings (usedWith)
+    common_pairs = [
+        ("EC", "LiPF6"), ("PC", "LiPF6"), ("DMC", "LiPF6"),
+        ("EMC", "LiPF6"), ("DEC", "LiPF6"), ("EC", "LiBF4"),
+        ("PC", "LiBF4"), ("EC", "LiTFSI"), ("DME", "LiTFSI"),
+        ("AN", "LiPF6"), ("DMSO", "LiTFSI"), ("FEC", "LiPF6"),
+        # Sodium salts
+        ("EC", "NaPF6"), ("PC", "NaPF6"), ("DMC", "NaPF6"),
+        ("EC", "NaClO4"), ("PC", "NaClO4"), ("DME", "NaTFSI"),
+        ("EC", "NaTFSI"), ("EC", "NaFSI"), ("PC", "NaBF4"),
+    ]
+
+    for solvent, salt in common_pairs:
+        # Try to resolve to KG IDs, fallback to abbreviation
+        src_id = name_to_id.get(solvent, solvent)
+        tgt_id = name_to_id.get(salt, salt)
+        relations.append({
+            "source": src_id,
+            "target": tgt_id,
+            "type": "usedWith",
+        })
+
+    # Solvent co-occurrence patterns
+    cooccur = [
+        ("EC", "DMC"), ("EC", "EMC"), ("EC", "DEC"),
+        ("EC", "PC"), ("PC", "EMC"), ("DMC", "EMC"),
+        ("EC", "FEC"), ("DMC", "DEC"),
+    ]
+
+    for s1, s2 in cooccur:
+        src_id = name_to_id.get(s1, s1)
+        tgt_id = name_to_id.get(s2, s2)
+        relations.append({
+            "source": src_id,
+            "target": tgt_id,
+            "type": "coOccursWith",
+        })
+
+    # Add KG molecule-to-molecule relations (sameAs, decomposesTo)
     all_relations = get_all_relations_from_kg()
+    mol_ids_set = set(m["id"] for m in all_molecules)
+    MOLECULE_TYPES = {"sameAs", "decomposesTo"}
 
-    if not all_relations:
-        # Fallback to hardcoded
-        relations = []
-        common_pairs = [
-            ("EC", "LiPF6"),
-            ("PC", "LiPF6"),
-            ("DMC", "LiPF6"),
-            ("EMC", "LiPF6"),
-            ("DEC", "LiPF6"),
-            ("EC", "LiBF4"),
-            ("PC", "LiBF4"),
-            ("EC", "LiTFSI"),
-            ("DME", "LiTFSI"),
-            ("AN", "LiPF6"),
-            ("DMSO", "LiTFSI"),
-            ("FEC", "LiPF6"),
-        ]
+    for rel in all_relations:
+        if rel["type"] in MOLECULE_TYPES:
+            # Only include if both are molecules
+            if rel["source"] in mol_ids_set and rel["target"] in mol_ids_set:
+                relations.append(rel)
 
-        for solvent, salt in common_pairs:
-            relations.append({
-                "source": solvent,
-                "target": salt,
-                "type": "usedWith",
-            })
-
-        # Solvent co-occurrence patterns
-        cooccur = [
-            ("EC", "DMC"),
-            ("EC", "EMC"),
-            ("EC", "DEC"),
-            ("EC", "PC"),
-            ("PC", "EMC"),
-            ("DMC", "EMC"),
-        ]
-
-        for s1, s2 in cooccur:
-            relations.append({
-                "source": s1,
-                "target": s2,
-                "type": "coOccursWith",
-            })
-
-        return relations
-
-    # Filter to only relations between specified molecules
+    # Filter to only relations between visible molecules
     if molecule_ids:
         molecule_ids = set(molecule_ids)
+        # Also add name/synonym mappings for visible molecules
+        expanded_ids = set(molecule_ids)
+        for mol_id in molecule_ids:
+            mol_name = id_to_name.get(mol_id, "")
+            if mol_name:
+                expanded_ids.add(mol_name)
+                # Check if this name maps back to a different ID
+                mapped_id = name_to_id.get(mol_name)
+                if mapped_id:
+                    expanded_ids.add(mapped_id)
+
         filtered = [
-            r for r in all_relations
-            if r["source"] in molecule_ids and r["target"] in molecule_ids
+            r for r in relations
+            if r["source"] in expanded_ids and r["target"] in expanded_ids
         ]
         return filtered
 
-    return all_relations
+    return relations
