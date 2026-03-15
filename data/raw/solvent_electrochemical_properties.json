@@ -595,6 +595,245 @@
           "reference": "Literature"
         }
       }
+    },
+    {
+      "name": "Sodium hexafluorophosphate",
+      "abbreviation": "NaPF6",
+      "smiles": "[Na+].F[P-](F)(F)(F)(F)F",
+      "cas_number": "21324-39-0",
+      "pubchem_cid": 166612,
+      "molecular_weight": 167.95,
+      "cation": "Na+",
+      "anion": "PF6-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "ionic_radius_cation": {
+          "value": 1.02,
+          "unit": "Angstrom",
+          "notes": "Na+ radius, larger than Li+ (0.76 A)",
+          "reference": "Shannon 1976, Acta Cryst. A32, 751"
+        },
+        "lattice_energy": {
+          "value": 497,
+          "unit": "kJ/mol",
+          "notes": "Lower than LiPF6 due to larger cation",
+          "reference": "Ponrouch et al. 2015, Energy Environ. Sci. 8, 2361"
+        },
+        "thermal_stability": {
+          "value": 100,
+          "unit": "C",
+          "notes": "Decomposition onset in EC/DMC, similar to LiPF6",
+          "reference": "Ponrouch et al. 2015"
+        },
+        "oxidation_stability": {
+          "value": 5.0,
+          "unit": "V vs Na/Na+",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 7.98,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:PC (1:1), 25C",
+          "reference": "Ponrouch et al. 2012, J. Power Sources 207, 28"
+        }
+      }
+    },
+    {
+      "name": "Sodium perchlorate",
+      "abbreviation": "NaClO4",
+      "smiles": "[Na+].[O-]Cl(=O)(=O)=O",
+      "cas_number": "7601-89-0",
+      "pubchem_cid": 516902,
+      "molecular_weight": 122.44,
+      "cation": "Na+",
+      "anion": "ClO4-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "lattice_energy": {
+          "value": 643,
+          "unit": "kJ/mol",
+          "reference": "Literature"
+        },
+        "thermal_stability": {
+          "value": 130,
+          "unit": "C",
+          "notes": "Better thermal stability than NaPF6",
+          "reference": "Ponrouch et al. 2015"
+        },
+        "oxidation_stability": {
+          "value": 5.1,
+          "unit": "V vs Na/Na+",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 6.4,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:PC (1:1), 25C",
+          "reference": "Ponrouch et al. 2012"
+        },
+        "solubility": {
+          "value": "high",
+          "notes": "Highly soluble in carbonate solvents",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Sodium bis(trifluoromethanesulfonyl)imide",
+      "abbreviation": "NaTFSI",
+      "smiles": "[Na+].C(F)(F)(F)S(=O)(=O)[N-]S(=O)(=O)C(F)(F)F",
+      "cas_number": "91742-21-1",
+      "pubchem_cid": 2733529,
+      "molecular_weight": 303.13,
+      "cation": "Na+",
+      "anion": "TFSI-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "thermal_stability": {
+          "value": 350,
+          "unit": "C",
+          "notes": "Excellent thermal stability",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 4.5,
+          "unit": "V vs Na/Na+",
+          "notes": "Can corrode Al current collector above 4V",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 6.2,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:DMC (1:1), 25C",
+          "reference": "Ding et al. 2013, J. Electrochem. Soc. 160, A1894"
+        },
+        "dissociation_constant": {
+          "value": "high",
+          "notes": "Highly dissociated due to delocalized charge on anion",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Sodium bis(fluorosulfonyl)imide",
+      "abbreviation": "NaFSI",
+      "smiles": "[Na+].[N-](S(=O)(=O)F)S(=O)(=O)F",
+      "cas_number": "100669-96-3",
+      "pubchem_cid": 16218186,
+      "molecular_weight": 203.11,
+      "cation": "Na+",
+      "anion": "FSI-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "thermal_stability": {
+          "value": 180,
+          "unit": "C",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 5.2,
+          "unit": "V vs Na/Na+",
+          "notes": "Better Al compatibility than NaTFSI",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 9.7,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:DMC (1:1), 25C",
+          "notes": "Higher conductivity than NaTFSI",
+          "reference": "Ding et al. 2013"
+        }
+      }
+    },
+    {
+      "name": "Sodium tetrafluoroborate",
+      "abbreviation": "NaBF4",
+      "smiles": "[Na+].F[B-](F)(F)F",
+      "cas_number": "13755-29-8",
+      "pubchem_cid": 26208,
+      "molecular_weight": 109.79,
+      "cation": "Na+",
+      "anion": "BF4-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "thermal_stability": {
+          "value": 148,
+          "unit": "C",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 4.8,
+          "unit": "V vs Na/Na+",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 3.5,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:DMC (1:1), 25C",
+          "notes": "Lower conductivity due to lower dissociation",
+          "reference": "Literature"
+        }
+      }
+    },
+    {
+      "name": "Sodium triflate",
+      "abbreviation": "NaCF3SO3",
+      "smiles": "[Na+].[O-]S(=O)(=O)C(F)(F)F",
+      "cas_number": "2926-30-9",
+      "pubchem_cid": 77929,
+      "molecular_weight": 172.06,
+      "cation": "Na+",
+      "anion": "CF3SO3-",
+      "battery_type": "sodium-ion",
+      "properties": {
+        "thermal_stability": {
+          "value": 254,
+          "unit": "C",
+          "reference": "Literature"
+        },
+        "oxidation_stability": {
+          "value": 4.6,
+          "unit": "V vs Na/Na+",
+          "reference": "Literature"
+        },
+        "typical_conductivity": {
+          "value": 4.8,
+          "unit": "mS/cm",
+          "conditions": "1M in EC:DMC (1:1), 25C",
+          "reference": "Literature"
+        },
+        "cost": {
+          "value": "low",
+          "notes": "Cost-effective alternative to NaTFSI",
+          "reference": "Literature"
+        }
+      }
     }
-  ]
+  ],
+  "li_vs_na_comparison": {
+    "description": "Key differences between Li+ and Na+ electrolytes",
+    "ionic_radius": {
+      "Li+": 0.76,
+      "Na+": 1.02,
+      "unit": "Angstrom",
+      "impact": "Larger Na+ leads to lower lattice energies, higher solubility, but slower diffusion"
+    },
+    "desolvation_energy": {
+      "Li+": "higher",
+      "Na+": "lower",
+      "impact": "Na+ desolvates more easily, potentially faster charge transfer kinetics"
+    },
+    "sei_formation": {
+      "notes": "Na-SEI typically less stable than Li-SEI in carbonate solvents; ether solvents often preferred for Na"
+    },
+    "preferred_solvents": {
+      "Li": ["EC", "DMC", "EMC", "DEC"],
+      "Na": ["EC", "PC", "DME", "Diglyme", "Tetraglyme"]
+    },
+    "references": [
+      "Ponrouch et al. 2015, Energy Environ. Sci. 8, 2361-2373",
+      "Ding et al. 2013, J. Electrochem. Soc. 160, A1894",
+      "Komaba et al. 2011, Electrochem. Commun. 13, 355"
+    ]
+  }
 }

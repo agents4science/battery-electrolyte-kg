@@ -116,7 +116,11 @@ The knowledge graph integrates five primary data sources, each contributing uniq
 - Dielectric constant
 - Oxidation/reduction potentials vs Li/Li+
 
-**Solvents Covered**: EC, PC, DMC, EMC, DEC, FEC, DME, THF, AN, DMSO, Sulfolane, GBL
+**Solvents Covered**: EC, PC, DMC, EMC, DEC, FEC, DME, THF, AN, DMSO, Sulfolane, GBL, Diglyme, Tetraglyme
+
+**Lithium Salts**: LiPF6, LiBF4, LiFSI, LiTFSI
+
+**Sodium Salts**: NaPF6, NaClO4, NaTFSI, NaFSI, NaBF4, NaCF3SO3 (with Li+ vs Na+ comparison data)
 
 ### 5. LIBE (Lithium-Ion Battery Electrolyte) Dataset
 

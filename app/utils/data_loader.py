@@ -21,13 +21,20 @@ def load_full_kg():
 
 # SMILES data for common compounds
 COMPOUND_SMILES = {
-    # Salts
+    # Lithium Salts
     "LiPF6": "[Li+].F[P-](F)(F)(F)(F)F",
     "LiBF4": "[Li+].F[B-](F)(F)F",
     "LiFSI": "[Li+].[N-](S(=O)(=O)F)S(=O)(=O)F",
     "LiTFSI": "[Li]N(S(=O)(=O)C(F)(F)F)S(=O)(=O)C(F)(F)F",
     "LiClO4": "[Li+].[O-]Cl(=O)(=O)=O",
     "LiBOB": "[Li+].O=C1O[B-]2(OC1=O)OC(=O)C(=O)O2",
+    # Sodium Salts
+    "NaPF6": "[Na+].F[P-](F)(F)(F)(F)F",
+    "NaBF4": "[Na+].F[B-](F)(F)F",
+    "NaFSI": "[Na+].[N-](S(=O)(=O)F)S(=O)(=O)F",
+    "NaTFSI": "[Na+].C(F)(F)(F)S(=O)(=O)[N-]S(=O)(=O)C(F)(F)F",
+    "NaClO4": "[Na+].[O-]Cl(=O)(=O)=O",
+    "NaCF3SO3": "[Na+].[O-]S(=O)(=O)C(F)(F)F",
     # Solvents
     "EC": "C1COC(=O)O1",
     "PC": "CC1COC(=O)O1",
@@ -40,9 +47,12 @@ COMPOUND_SMILES = {
     "FEC": "C1C(OC(=O)O1)F",
     "DOL": "C1COCO1",
     "THF": "C1CCOC1",
+    "Diglyme": "COCCOCCOC",
+    "Tetraglyme": "COCCOCCOCCOCCOC",
 }
 
 COMPOUND_NAMES = {
+    # Solvents
     "EC": "Ethylene carbonate",
     "PC": "Propylene carbonate",
     "DMC": "Dimethyl carbonate",
@@ -54,12 +64,22 @@ COMPOUND_NAMES = {
     "FEC": "Fluoroethylene carbonate",
     "DOL": "Dioxolane",
     "THF": "Tetrahydrofuran",
+    "Diglyme": "Diethylene glycol dimethyl ether",
+    "Tetraglyme": "Tetraethylene glycol dimethyl ether",
+    # Lithium Salts
     "LiPF6": "Lithium hexafluorophosphate",
     "LiBF4": "Lithium tetrafluoroborate",
     "LiFSI": "Lithium bis(fluorosulfonyl)imide",
     "LiTFSI": "Lithium bis(trifluoromethanesulfonyl)imide",
     "LiClO4": "Lithium perchlorate",
     "LiBOB": "Lithium bis(oxalato)borate",
+    # Sodium Salts
+    "NaPF6": "Sodium hexafluorophosphate",
+    "NaBF4": "Sodium tetrafluoroborate",
+    "NaFSI": "Sodium bis(fluorosulfonyl)imide",
+    "NaTFSI": "Sodium bis(trifluoromethanesulfonyl)imide",
+    "NaClO4": "Sodium perchlorate",
+    "NaCF3SO3": "Sodium triflate",
 }
 
 
