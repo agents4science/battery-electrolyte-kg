@@ -229,8 +229,13 @@ with col1:
     st.subheader("Graph Visualization")
 
     if len(G.nodes()) > 0:
-        # Display the graph
-        selected_point = st.plotly_chart(fig, on_select="rerun", key="kg_graph")
+        # Display the graph - selection_mode="points" enables click selection
+        selected_point = st.plotly_chart(
+            fig,
+            on_select="rerun",
+            selection_mode=["points"],
+            key="kg_graph"
+        )
 
         # Handle selection
         if selected_point and selected_point.selection and selected_point.selection.points:
@@ -254,6 +259,8 @@ with col1:
     **Showing {len(filtered_molecules)} molecules, {len(relations)} relations**
 
     **Legend:** 🔵 Solvent | 🟢 Salt | 🟣 Molecule | 🟠 Interphase
+
+    *Tip: Click a node to select it, or use the dropdown on the right.*
     """)
 
 with col2:
