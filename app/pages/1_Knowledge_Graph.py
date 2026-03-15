@@ -17,6 +17,7 @@ from utils.data_loader import (
     get_molecules_for_graph,
     get_relations_for_graph,
     get_relations_for_molecule,
+    get_measurements_for_molecule,
     load_curated_properties,
     COMPOUND_NAMES,
     COMPOUND_SMILES,
@@ -334,12 +335,31 @@ with col2:
 
             entity_props = solvent_props or salt_props
             if entity_props:
-                st.markdown("**Properties:**")
+                st.markdown("**Curated Properties:**")
                 prop_data = entity_props.get("properties", {})
                 for prop_name, prop_val in prop_data.items():
                     if isinstance(prop_val, dict) and "value" in prop_val:
                         unit = prop_val.get("unit", "")
                         st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
+
+            # Show KG measurements (from datasets)
+            measurements = get_measurements_for_molecule(selected_mol_id)
+            if measurements:
+                with st.expander(f"**Dataset Measurements** ({len(measurements)} values)"):
+                    # Group by property type
+                    by_prop = {}
+                    for m in measurements:
+                        prop = m["property"]
+                        if prop not in by_prop:
+                            by_prop[prop] = []
+                        by_prop[prop].append(m)
+
+                    for prop, mlist in by_prop.items():
+                        values = [f"{m['value']} {m['unit']}" for m in mlist if m['value'] is not None]
+                        if values:
+                            st.markdown(f"**{prop.replace('_', ' ').title()}:** {', '.join(values[:5])}")
+                            if len(values) > 5:
+                                st.caption(f"...and {len(values) - 5} more")
 
             # Show ALL relationships from full KG (not just visible ones)
             st.markdown("---")

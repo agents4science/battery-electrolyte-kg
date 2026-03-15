@@ -471,6 +471,36 @@ def get_relations_for_molecule(molecule_id, molecule_name=None):
     return relations
 
 
+def get_measurements_for_molecule(molecule_id):
+    """
+    Get all measurements for a molecule from the KG.
+
+    Returns list of measurements with property_type, value, unit.
+    """
+    kg = load_full_kg()
+    if not kg:
+        return []
+
+    rels = kg.get("relations", [])
+    measurements = kg.get("measurements", {})
+
+    # Find hasMeasurement relations for this molecule
+    meas_ids = [r[2] for r in rels if r[1] == "hasMeasurement" and r[0] == molecule_id]
+
+    result = []
+    for mid in meas_ids:
+        m = measurements.get(mid, {})
+        if m:
+            result.append({
+                "property": m.get("property_type", "unknown"),
+                "value": m.get("value"),
+                "unit": m.get("unit", ""),
+                "temperature": m.get("temperature"),
+            })
+
+    return result
+
+
 def get_relations_for_graph(molecule_ids=None):
     """
     Get relations for graph visualization.
