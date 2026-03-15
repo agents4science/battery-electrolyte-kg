@@ -133,12 +133,12 @@ colors = {
 }
 
 for mol in filtered_molecules:
+    # Note: Don't use 'title' as it causes double-click navigation errors
     nodes.append(Node(
         id=mol["id"],
         label=mol["id"],
         size=25,
         color=colors.get(mol["type"], "#888888"),
-        title=f"{mol['name']} | {mol['smiles']}",
         symbolType="circle",
     ))
 

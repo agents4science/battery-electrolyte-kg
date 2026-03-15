@@ -31,7 +31,19 @@
       "Bash(git rev-parse:*)",
       "Bash(git init:*)",
       "Bash(git branch:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: AI-driven Knowledge Graph for Battery Electrolyte Design\n\nIntegrated data sources:\n- HI Münster Conductivity Dataset \\(5,035 measurements\\)\n- CALiSol-23 \\(13,023 measurements, 38 solvents, 14 salts\\)\n- Materials Project Electrolyte Genome \\(39,245 measurements\\)\n- Curated Electrochemical Properties \\(67 measurements\\)\n- LIBE SEI/Interphase Species \\(200 species\\)\n\nFeatures:\n- SMILES-based cross-dataset molecular linking \\(182 SAME_AS relations\\)\n- Decomposition pathway modeling \\(379 relations\\)\n- Cross-property correlation analysis \\(LUMO-conductivity r=0.70\\)\n- Automated hypothesis generation \\(100 rules mined\\)\n- Visualization dashboard\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git config:*)",
+      "Bash(git reset:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(pip install:*)",
+      "Bash(open \"https://share.streamlit.io/deploy?repository=agents4science/battery-electrolyte-kg&branch=main&mainModule=app/streamlit_app.py\")",
+      "Bash(open \"https://battery-electrolyte-kg.streamlit.app\")",
+      "WebFetch(domain:doi.org)",
+      "WebFetch(domain:xlink.rsc.org)",
+      "WebFetch(domain:pubs.rsc.org)"
     ]
   }
 }

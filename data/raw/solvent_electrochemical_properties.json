@@ -616,8 +616,8 @@
         "lattice_energy": {
           "value": 497,
           "unit": "kJ/mol",
-          "notes": "Lower than LiPF6 due to larger cation",
-          "reference": "Ponrouch et al. 2015, Energy Environ. Sci. 8, 2361"
+          "notes": "Estimated ~10% lower than LiPF6 (553 kJ/mol) due to larger Na+ ionic radius",
+          "reference": "Estimated from ionic radius scaling; needs experimental verification"
         },
         "thermal_stability": {
           "value": 100,
@@ -652,7 +652,8 @@
         "lattice_energy": {
           "value": 643,
           "unit": "kJ/mol",
-          "reference": "Literature"
+          "notes": "Estimated from Born-Haber cycle calculations",
+          "reference": "Estimated; needs experimental verification"
         },
         "thermal_stability": {
           "value": 130,
