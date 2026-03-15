@@ -89,6 +89,12 @@ max_nodes = st.sidebar.slider(
     help="Limit nodes for performance. Use search to find specific molecules."
 )
 
+show_neighbors = st.sidebar.checkbox(
+    "Show connected molecules",
+    value=True,
+    help="When searching, also show molecules connected to the search results"
+)
+
 st.sidebar.markdown("---")
 st.sidebar.caption("KG contains 23,421 molecules total. Use search and filters to explore.")
 
@@ -100,6 +106,44 @@ molecules = get_molecules_for_graph(
 )
 
 molecule_ids = {m["id"] for m in molecules}
+
+# If searching and show_neighbors is enabled, expand to include connected molecules
+if search_query and show_neighbors and len(molecules) > 0:
+    from utils.data_loader import get_relations_for_molecule, get_all_molecules_from_kg, COMPOUND_NAMES, COMPOUND_SMILES
+
+    # Get neighbors for each searched molecule
+    neighbor_ids = set()
+    for mol in molecules:
+        mol_relations = get_relations_for_molecule(mol["id"], mol.get("name"))
+        for rel in mol_relations:
+            neighbor_ids.add(rel["other_id"])
+
+    # Load neighbor molecule data
+    all_mols = get_all_molecules_from_kg()
+    mol_by_id = {m["id"]: m for m in all_mols}
+
+    # Also check hardcoded compounds
+    for abbrev, smiles in COMPOUND_SMILES.items():
+        if abbrev not in mol_by_id:
+            mol_by_id[abbrev] = {
+                "id": abbrev,
+                "name": COMPOUND_NAMES.get(abbrev, abbrev),
+                "smiles": smiles,
+                "type": "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
+            }
+
+    # Add neighbors to molecules list (up to max_nodes total)
+    existing_ids = {m["id"] for m in molecules}
+    for nid in neighbor_ids:
+        if len(molecules) >= max_nodes:
+            break
+        if nid not in existing_ids:
+            if nid in mol_by_id:
+                molecules.append(mol_by_id[nid])
+                existing_ids.add(nid)
+
+    molecule_ids = {m["id"] for m in molecules}
+
 relations = get_relations_for_graph(molecule_ids=molecule_ids)
 filtered_molecules = molecules
 
@@ -229,29 +273,8 @@ with col1:
     st.subheader("Graph Visualization")
 
     if len(G.nodes()) > 0:
-        # Display the graph - selection_mode="points" enables click selection
-        selected_point = st.plotly_chart(
-            fig,
-            on_select="rerun",
-            selection_mode=["points"],
-            key="kg_graph"
-        )
-
-        # Handle selection
-        if selected_point and selected_point.selection and selected_point.selection.points:
-            point = selected_point.selection.points[0]
-            curve_num = point.get("curve_number", -1)
-            point_idx = point.get("point_index", -1)
-
-            # curve 0 = edges, curve 1 = edge labels, curve 2 = nodes
-            if curve_num == 2 and point_idx < len(node_ids):
-                # Node clicked
-                st.session_state['selected_node'] = node_ids[point_idx]
-                st.session_state['selected_edge'] = None
-            elif curve_num == 1 and point_idx < len(edge_info):
-                # Edge clicked
-                st.session_state['selected_edge'] = edge_info[point_idx]
-                st.session_state['selected_node'] = None
+        # Display the graph (hover to see names, use dropdown to select)
+        st.plotly_chart(fig, key="kg_graph")
     else:
         st.info("No molecules match the current filters.")
 
@@ -260,7 +283,7 @@ with col1:
 
     **Legend:** 🔵 Solvent | 🟢 Salt | 🟣 Molecule | 🟠 Interphase
 
-    *Tip: Click a node to select it, or use the dropdown on the right.*
+    *Hover over nodes to see names. Use the dropdown on the right to view details.*
     """)
 
 with col2:
