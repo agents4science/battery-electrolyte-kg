@@ -256,80 +256,59 @@ with col1:
     """)
 
 with col2:
-    # Check if edge is selected
-    selected_edge = st.session_state.get('selected_edge')
-    selected_node_id = st.session_state.get('selected_node')
+    # Molecule selector - always show this
+    st.subheader("📋 Node Details")
 
-    if selected_edge:
-        # Show edge/relationship details
-        st.subheader("🔗 Relationship Details")
-        st.markdown(f"### {selected_edge['source_name']} ↔ {selected_edge['target_name']}")
-        st.markdown(f"**Relation type:** `{selected_edge['type']}`")
+    mol_options = [(m["id"], m.get("name", m["id"])) for m in filtered_molecules]
+    mol_ids = [m[0] for m in mol_options]
+    mol_id_to_name = {m[0]: m[1] for m in mol_options}
 
-        explanation = RELATION_EXPLANATIONS.get(selected_edge['type'], {})
-        if explanation:
-            st.info(f"**Method:** {explanation.get('method', 'Unknown')}")
-            st.markdown(explanation.get('description', ''))
-            st.caption(f"**Basis:** {explanation.get('basis', 'N/A')}")
-        else:
-            st.caption("No detailed explanation available for this relation type")
+    if mol_ids:
+        # Get default from session state (graph click) or use first
+        selected_node_id = st.session_state.get('selected_node')
+        default_idx = 0
+        if selected_node_id and selected_node_id in mol_ids:
+            default_idx = mol_ids.index(selected_node_id)
 
-        st.markdown("---")
-        st.caption("Click a node to see molecule details")
+        selected_mol_id = st.selectbox(
+            "Select molecule",
+            mol_ids,
+            index=default_idx,
+            format_func=lambda x: mol_id_to_name.get(x, x),
+            key="mol_select"
+        )
 
-    else:
-        # Show node details
-        st.subheader("📋 Node Details")
+        selected_mol_data = next((m for m in molecules if m["id"] == selected_mol_id), None)
 
-        # Molecule selector
-        mol_options = [(m["id"], m.get("name", m["id"])) for m in filtered_molecules]
-        mol_ids = [m[0] for m in mol_options]
-        mol_id_to_name = {m[0]: m[1] for m in mol_options}
+        if selected_mol_data:
+            st.markdown(f"### {selected_mol_data['name']}")
+            st.markdown(f"**Type:** {selected_mol_data['type'].title()}")
+            if selected_mol_data.get('smiles'):
+                st.code(selected_mol_data['smiles'], language=None)
 
-        if mol_ids:
-            default_idx = 0
-            if selected_node_id and selected_node_id in mol_ids:
-                default_idx = mol_ids.index(selected_node_id)
-
-            selected_mol_id = st.selectbox(
-                "Select molecule",
-                mol_ids,
-                index=default_idx,
-                format_func=lambda x: mol_id_to_name.get(x, x),
-                key="mol_select"
+            # Show curated properties
+            props = load_curated_properties()
+            solvent_props = next(
+                (s for s in props.get("solvents", [])
+                 if s.get("abbreviation") == selected_mol_data.get("name") or
+                    s.get("name") == selected_mol_data.get("name")),
+                None
+            )
+            salt_props = next(
+                (s for s in props.get("salts", [])
+                 if s.get("abbreviation") == selected_mol_data.get("name") or
+                    s.get("name") == selected_mol_data.get("name")),
+                None
             )
 
-            selected_mol_data = next((m for m in molecules if m["id"] == selected_mol_id), None)
-
-            if selected_mol_data:
-                st.markdown(f"### {selected_mol_data['name']}")
-                st.markdown(f"**Type:** {selected_mol_data['type'].title()}")
-                if selected_mol_data.get('smiles'):
-                    st.code(selected_mol_data['smiles'], language=None)
-
-                # Show curated properties
-                props = load_curated_properties()
-                solvent_props = next(
-                    (s for s in props.get("solvents", [])
-                     if s.get("abbreviation") == selected_mol_data.get("name") or
-                        s.get("name") == selected_mol_data.get("name")),
-                    None
-                )
-                salt_props = next(
-                    (s for s in props.get("salts", [])
-                     if s.get("abbreviation") == selected_mol_data.get("name") or
-                        s.get("name") == selected_mol_data.get("name")),
-                    None
-                )
-
-                entity_props = solvent_props or salt_props
-                if entity_props:
-                    st.markdown("**Properties:**")
-                    prop_data = entity_props.get("properties", {})
-                    for prop_name, prop_val in prop_data.items():
-                        if isinstance(prop_val, dict) and "value" in prop_val:
-                            unit = prop_val.get("unit", "")
-                            st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
+            entity_props = solvent_props or salt_props
+            if entity_props:
+                st.markdown("**Properties:**")
+                prop_data = entity_props.get("properties", {})
+                for prop_name, prop_val in prop_data.items():
+                    if isinstance(prop_val, dict) and "value" in prop_val:
+                        unit = prop_val.get("unit", "")
+                        st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
 
             # Show relationships with explanations
             st.markdown("---")
@@ -366,5 +345,5 @@ with col2:
                     st.caption(f"...and {len(node_relations) - 10} more relationships")
             else:
                 st.caption("No relationships in current view")
-        else:
-            st.info("No molecules to display with current filters")
+    else:
+        st.info("No molecules to display with current filters")
