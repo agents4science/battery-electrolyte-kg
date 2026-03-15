@@ -304,18 +304,20 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
     """
     all_molecules = get_all_molecules_from_kg()
 
-    if not all_molecules:
-        # Fallback to hardcoded if KG not available
-        molecules = []
-        for abbrev, smiles in COMPOUND_SMILES.items():
-            mol_type = "salt" if abbrev.startswith("Li") else "solvent"
-            molecules.append({
+    # Always add common compounds (including sodium salts) to ensure they're searchable
+    existing_smiles = {m.get("smiles") for m in all_molecules}
+    for abbrev, smiles in COMPOUND_SMILES.items():
+        if smiles not in existing_smiles:
+            mol_type = "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
+            all_molecules.append({
                 "id": abbrev,
                 "name": COMPOUND_NAMES.get(abbrev, abbrev),
                 "smiles": smiles,
                 "type": mol_type,
             })
-        return molecules
+
+    if not all_molecules:
+        return []
 
     # Filter by type
     if entity_types:
