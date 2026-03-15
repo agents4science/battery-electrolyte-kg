@@ -132,17 +132,51 @@ else:
 # Build Plotly figure
 edge_x = []
 edge_y = []
-for edge in G.edges():
-    x0, y0 = pos[edge[0]]
-    x1, y1 = pos[edge[1]]
+edge_mid_x = []
+edge_mid_y = []
+edge_labels = []
+edge_info = []  # Store edge data for click handling
+
+for edge in G.edges(data=True):
+    src, tgt, data = edge
+    x0, y0 = pos[src]
+    x1, y1 = pos[tgt]
     edge_x.extend([x0, x1, None])
     edge_y.extend([y0, y1, None])
 
+    # Midpoint for label and click target
+    mid_x = (x0 + x1) / 2
+    mid_y = (y0 + y1) / 2
+    edge_mid_x.append(mid_x)
+    edge_mid_y.append(mid_y)
+    edge_labels.append(data.get('relation', ''))
+    edge_info.append({
+        'source': src,
+        'target': tgt,
+        'type': data.get('relation', ''),
+        'source_name': mol_name_lookup.get(src, src[:12]),
+        'target_name': mol_name_lookup.get(tgt, tgt[:12])
+    })
+
+# Edge lines
 edge_trace = go.Scatter(
     x=edge_x, y=edge_y,
-    line=dict(width=1, color='#888'),
+    line=dict(width=1.5, color='#888'),
     hoverinfo='none',
     mode='lines'
+)
+
+# Edge labels (clickable)
+edge_label_trace = go.Scatter(
+    x=edge_mid_x, y=edge_mid_y,
+    mode='markers+text',
+    text=edge_labels,
+    textposition="middle center",
+    textfont=dict(size=8, color='#555'),
+    hoverinfo='text',
+    hovertext=[f"{e['source_name']} ↔ {e['target_name']}\n({e['type']})" for e in edge_info],
+    marker=dict(size=15, color='rgba(255,255,255,0.8)', symbol='square'),
+    customdata=[f"edge:{i}" for i in range(len(edge_info))],
 )
 
 node_x = []
@@ -164,18 +198,19 @@ node_trace = go.Scatter(
     x=node_x, y=node_y,
     mode='markers+text',
     hoverinfo='text',
+    hovertext=node_text,
     text=node_text,
     textposition="top center",
     textfont=dict(size=10),
     marker=dict(
-        size=20,
+        size=25,
         color=node_colors,
         line=dict(width=2, color='white')
     ),
-    customdata=node_ids,
+    customdata=[f"node:{nid}" for nid in node_ids],
 )
 
-fig = go.Figure(data=[edge_trace, node_trace],
+fig = go.Figure(data=[edge_trace, edge_label_trace, node_trace],
                 layout=go.Layout(
                     showlegend=False,
                     hovermode='closest',
@@ -183,6 +218,7 @@ fig = go.Figure(data=[edge_trace, node_trace],
                     xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                     yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                     height=500,
+                    clickmode='event+select',
                 ))
 
 # Main layout
@@ -197,9 +233,19 @@ with col1:
 
         # Handle selection
         if selected_point and selected_point.selection and selected_point.selection.points:
-            point_idx = selected_point.selection.points[0].get("point_index")
-            if point_idx is not None and point_idx < len(node_ids):
+            point = selected_point.selection.points[0]
+            curve_num = point.get("curve_number", -1)
+            point_idx = point.get("point_index", -1)
+
+            # curve 0 = edges, curve 1 = edge labels, curve 2 = nodes
+            if curve_num == 2 and point_idx < len(node_ids):
+                # Node clicked
                 st.session_state['selected_node'] = node_ids[point_idx]
+                st.session_state['selected_edge'] = None
+            elif curve_num == 1 and point_idx < len(edge_info):
+                # Edge clicked
+                st.session_state['selected_edge'] = edge_info[point_idx]
+                st.session_state['selected_node'] = None
     else:
         st.info("No molecules match the current filters.")
 
@@ -210,57 +256,80 @@ with col1:
     """)
 
 with col2:
-    st.subheader("📋 Node Details")
+    # Check if edge is selected
+    selected_edge = st.session_state.get('selected_edge')
+    selected_node_id = st.session_state.get('selected_node')
 
-    # Molecule selector
-    mol_options = [(m["id"], m.get("name", m["id"])) for m in filtered_molecules]
-    mol_ids = [m[0] for m in mol_options]
-    mol_id_to_name = {m[0]: m[1] for m in mol_options}
+    if selected_edge:
+        # Show edge/relationship details
+        st.subheader("🔗 Relationship Details")
+        st.markdown(f"### {selected_edge['source_name']} ↔ {selected_edge['target_name']}")
+        st.markdown(f"**Relation type:** `{selected_edge['type']}`")
 
-    if mol_ids:
-        default_idx = 0
-        if 'selected_node' in st.session_state and st.session_state['selected_node'] in mol_ids:
-            default_idx = mol_ids.index(st.session_state['selected_node'])
+        explanation = RELATION_EXPLANATIONS.get(selected_edge['type'], {})
+        if explanation:
+            st.info(f"**Method:** {explanation.get('method', 'Unknown')}")
+            st.markdown(explanation.get('description', ''))
+            st.caption(f"**Basis:** {explanation.get('basis', 'N/A')}")
+        else:
+            st.caption("No detailed explanation available for this relation type")
 
-        selected_mol_id = st.selectbox(
-            "Select molecule",
-            mol_ids,
-            index=default_idx,
-            format_func=lambda x: mol_id_to_name.get(x, x),
-            key="mol_select"
-        )
+        st.markdown("---")
+        st.caption("Click a node to see molecule details")
 
-        selected_mol_data = next((m for m in molecules if m["id"] == selected_mol_id), None)
+    else:
+        # Show node details
+        st.subheader("📋 Node Details")
 
-        if selected_mol_data:
-            st.markdown(f"### {selected_mol_data['name']}")
-            st.markdown(f"**Type:** {selected_mol_data['type'].title()}")
-            if selected_mol_data.get('smiles'):
-                st.code(selected_mol_data['smiles'], language=None)
+        # Molecule selector
+        mol_options = [(m["id"], m.get("name", m["id"])) for m in filtered_molecules]
+        mol_ids = [m[0] for m in mol_options]
+        mol_id_to_name = {m[0]: m[1] for m in mol_options}
 
-            # Show curated properties
-            props = load_curated_properties()
-            solvent_props = next(
-                (s for s in props.get("solvents", [])
-                 if s.get("abbreviation") == selected_mol_data.get("name") or
-                    s.get("name") == selected_mol_data.get("name")),
-                None
+        if mol_ids:
+            default_idx = 0
+            if selected_node_id and selected_node_id in mol_ids:
+                default_idx = mol_ids.index(selected_node_id)
+
+            selected_mol_id = st.selectbox(
+                "Select molecule",
+                mol_ids,
+                index=default_idx,
+                format_func=lambda x: mol_id_to_name.get(x, x),
+                key="mol_select"
             )
-            salt_props = next(
-                (s for s in props.get("salts", [])
-                 if s.get("abbreviation") == selected_mol_data.get("name") or
-                    s.get("name") == selected_mol_data.get("name")),
-                None
-            )
 
-            entity_props = solvent_props or salt_props
-            if entity_props:
-                st.markdown("**Properties:**")
-                prop_data = entity_props.get("properties", {})
-                for prop_name, prop_val in prop_data.items():
-                    if isinstance(prop_val, dict) and "value" in prop_val:
-                        unit = prop_val.get("unit", "")
-                        st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
+            selected_mol_data = next((m for m in molecules if m["id"] == selected_mol_id), None)
+
+            if selected_mol_data:
+                st.markdown(f"### {selected_mol_data['name']}")
+                st.markdown(f"**Type:** {selected_mol_data['type'].title()}")
+                if selected_mol_data.get('smiles'):
+                    st.code(selected_mol_data['smiles'], language=None)
+
+                # Show curated properties
+                props = load_curated_properties()
+                solvent_props = next(
+                    (s for s in props.get("solvents", [])
+                     if s.get("abbreviation") == selected_mol_data.get("name") or
+                        s.get("name") == selected_mol_data.get("name")),
+                    None
+                )
+                salt_props = next(
+                    (s for s in props.get("salts", [])
+                     if s.get("abbreviation") == selected_mol_data.get("name") or
+                        s.get("name") == selected_mol_data.get("name")),
+                    None
+                )
+
+                entity_props = solvent_props or salt_props
+                if entity_props:
+                    st.markdown("**Properties:**")
+                    prop_data = entity_props.get("properties", {})
+                    for prop_name, prop_val in prop_data.items():
+                        if isinstance(prop_val, dict) and "value" in prop_val:
+                            unit = prop_val.get("unit", "")
+                            st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
 
             # Show relationships with explanations
             st.markdown("---")
