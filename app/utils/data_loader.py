@@ -341,20 +341,23 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
 
 def get_relations_for_molecule(molecule_id, molecule_name=None):
     """
-    Get ALL relations for a specific molecule from the full KG.
+    Get molecule-to-molecule relations for a specific molecule from the full KG.
 
     Args:
         molecule_id: The molecule ID (UUID or abbreviation)
         molecule_name: Optional molecule name/abbreviation for fallback matching
 
-    Returns list of relations where the molecule is either source or target,
-    along with info about the connected molecule.
+    Returns list of relations where the molecule is connected to another molecule,
+    filtering out non-molecule relations (measurements, properties, etc).
     """
     all_relations = get_all_relations_from_kg()
     all_molecules = get_all_molecules_from_kg()
 
-    # Build molecule lookup
+    # Build molecule lookup by ID
     mol_lookup = {m["id"]: m for m in all_molecules}
+
+    # Build set of all molecule IDs for quick lookup
+    all_mol_ids = set(mol_lookup.keys())
 
     # Also add hardcoded compounds
     for abbrev, smiles in COMPOUND_SMILES.items():
@@ -365,6 +368,14 @@ def get_relations_for_molecule(molecule_id, molecule_name=None):
                 "smiles": smiles,
                 "type": "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
             }
+            all_mol_ids.add(abbrev)
+
+    # Relation types that connect molecules to other molecules
+    # Exclude: hasMeasurement, measuresProperty, hasThermodynamics (link to non-molecule records)
+    MOLECULE_RELATION_TYPES = {
+        "sameAs", "decomposesTo", "hasSolvent", "hasSalt",
+        "usedWith", "coOccursWith", "increases", "decreases"
+    }
 
     # Build a reverse lookup: name -> abbreviation for hardcoded compounds
     name_to_abbrev = {v: k for k, v in COMPOUND_NAMES.items()}
@@ -382,23 +393,37 @@ def get_relations_for_molecule(molecule_id, molecule_name=None):
 
     relations = []
     for rel in all_relations:
+        rel_type = rel["type"]
+
+        # Skip non-molecule relations
+        if rel_type not in MOLECULE_RELATION_TYPES:
+            continue
+
         if rel["source"] in match_ids:
-            other_mol = mol_lookup.get(rel["target"], {})
+            other_id = rel["target"]
+            # Only include if target is a molecule
+            if other_id not in all_mol_ids:
+                continue
+            other_mol = mol_lookup.get(other_id, {})
             relations.append({
                 "direction": "outgoing",
-                "type": rel["type"],
-                "other_id": rel["target"],
-                "other_name": other_mol.get("name", rel["target"][:20]),
+                "type": rel_type,
+                "other_id": other_id,
+                "other_name": other_mol.get("name", other_id[:20]),
                 "other_type": other_mol.get("type", "unknown"),
                 "other_smiles": other_mol.get("smiles", ""),
             })
         elif rel["target"] in match_ids:
-            other_mol = mol_lookup.get(rel["source"], {})
+            other_id = rel["source"]
+            # Only include if source is a molecule
+            if other_id not in all_mol_ids:
+                continue
+            other_mol = mol_lookup.get(other_id, {})
             relations.append({
                 "direction": "incoming",
-                "type": rel["type"],
-                "other_id": rel["source"],
-                "other_name": other_mol.get("name", rel["source"][:20]),
+                "type": rel_type,
+                "other_id": other_id,
+                "other_name": other_mol.get("name", other_id[:20]),
                 "other_type": other_mol.get("type", "unknown"),
                 "other_smiles": other_mol.get("smiles", ""),
             })
