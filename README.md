@@ -14,7 +14,7 @@ The KG enables discovery of structure-property relationships that span multiple 
 
 ## Web Demo
 
-**Try the interactive demo:** [https://battery-electrolyte-kg.streamlit.app](https://battery-electrolyte-kg.streamlit.app)
+**Try the interactive demo:** [https://agents4science-battery-electrolyte-kg-appstreamlit-app-g0rxke.streamlit.app](https://agents4science-battery-electrolyte-kg-appstreamlit-app-g0rxke.streamlit.app)
 
 The web application provides:
 - **Knowledge Graph Explorer** - Interactive visualization with molecule search and filtering
