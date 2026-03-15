@@ -180,14 +180,15 @@ config = Config(
     node={
         "labelProperty": "label",
         "renderLabel": True,
+        "highlightStrokeColor": "#F7A7A6",
     },
     link={
         "labelProperty": "label",
         "renderLabel": True,
     },
-    # Disable navigation on double-click
+    # Use staticGraphWithDragAndDrop to prevent double-click navigation issues
     staticGraph=False,
-    staticGraphWithDragAndDrop=False,
+    staticGraphWithDragAndDrop=True,
 )
 
 # Main layout
@@ -195,7 +196,7 @@ col1, col2 = st.columns([3, 2])
 
 with col1:
     st.subheader("Graph Visualization")
-    st.caption("Click a node to select it. Use the dropdown on the right to explore relationships.")
+    st.caption("Single-click a node to select it. Drag nodes to rearrange. Use the dropdown on the right to explore relationships.")
 
     if nodes:
         return_value = agraph(nodes=nodes, edges=edges, config=config)
