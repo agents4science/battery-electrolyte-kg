@@ -230,7 +230,7 @@ with col1:
 
     if len(G.nodes()) > 0:
         # Display the graph
-        selected_point = st.plotly_chart(fig, use_container_width=True, on_select="rerun", key="kg_graph")
+        selected_point = st.plotly_chart(fig, on_select="rerun", key="kg_graph")
 
         # Handle selection
         if selected_point and selected_point.selection and selected_point.selection.points:
