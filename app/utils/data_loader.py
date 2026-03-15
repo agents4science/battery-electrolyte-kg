@@ -239,6 +239,7 @@ def get_all_molecules_from_kg():
             "smiles": smiles,
             "type": mol_type,
             "source": "molecules",
+            "synonyms": mol.get("synonyms", []),
         })
 
     # Add solvents (if KG has separate solvents dict)
@@ -249,6 +250,7 @@ def get_all_molecules_from_kg():
             "smiles": sol.get("smiles", ""),
             "type": "solvent",
             "source": "solvents",
+            "synonyms": sol.get("synonyms", []),
         })
 
     # Add salts (if KG has separate salts dict)
@@ -259,6 +261,7 @@ def get_all_molecules_from_kg():
             "smiles": salt.get("smiles", ""),
             "type": "salt",
             "source": "salts",
+            "synonyms": salt.get("synonyms", []),
         })
 
     # Add interphase species
@@ -269,6 +272,7 @@ def get_all_molecules_from_kg():
             "smiles": sp.get("smiles", ""),
             "type": "interphase",
             "source": "interphase_species",
+            "synonyms": sp.get("synonyms", []),
         })
 
     return molecules
@@ -587,16 +591,26 @@ def get_relations_for_graph(molecule_ids=None):
     # Filter to only relations between visible molecules
     if molecule_ids:
         molecule_ids = set(molecule_ids)
-        # Also add name/synonym mappings for visible molecules
+        # Expand IDs to include both UUIDs and abbreviations/names
         expanded_ids = set(molecule_ids)
         for mol_id in molecule_ids:
+            # If mol_id is a UUID, add its name
             mol_name = id_to_name.get(mol_id, "")
             if mol_name:
                 expanded_ids.add(mol_name)
-                # Check if this name maps back to a different ID
+                # Also add any mapped ID for that name
                 mapped_id = name_to_id.get(mol_name)
                 if mapped_id:
                     expanded_ids.add(mapped_id)
+
+            # If mol_id is an abbreviation/name, add its UUID
+            mapped_id = name_to_id.get(mol_id)
+            if mapped_id:
+                expanded_ids.add(mapped_id)
+                # And add the name for that UUID
+                mapped_name = id_to_name.get(mapped_id, "")
+                if mapped_name:
+                    expanded_ids.add(mapped_name)
 
         filtered = [
             r for r in relations
