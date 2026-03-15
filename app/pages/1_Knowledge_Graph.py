@@ -366,5 +366,5 @@ with col2:
                     st.caption(f"...and {len(node_relations) - 10} more relationships")
             else:
                 st.caption("No relationships in current view")
-    else:
-        st.info("No molecules to display with current filters")
+        else:
+            st.info("No molecules to display with current filters")
