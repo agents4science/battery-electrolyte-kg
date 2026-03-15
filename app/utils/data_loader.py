@@ -313,11 +313,13 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
     for abbrev, smiles in COMPOUND_SMILES.items():
         if smiles not in existing_smiles:
             mol_type = "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
+            full_name = COMPOUND_NAMES.get(abbrev, abbrev)
             all_molecules.append({
                 "id": abbrev,
-                "name": COMPOUND_NAMES.get(abbrev, abbrev),
+                "name": full_name,
                 "smiles": smiles,
                 "type": mol_type,
+                "synonyms": [abbrev] if abbrev != full_name else [],
             })
 
     if not all_molecules:
@@ -327,15 +329,24 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
     if entity_types:
         all_molecules = [m for m in all_molecules if m["type"] in entity_types]
 
-    # Filter by search query
+    # Filter by search query (search name, smiles, type, and synonyms)
     if search_query:
         query_lower = search_query.lower()
-        all_molecules = [
-            m for m in all_molecules
-            if (query_lower in m["name"].lower()
-                or query_lower in m.get("smiles", "").lower()
-                or query_lower in m.get("type", "").lower())
-        ]
+
+        def matches_query(m):
+            if query_lower in m["name"].lower():
+                return True
+            if query_lower in m.get("smiles", "").lower():
+                return True
+            if query_lower in m.get("type", "").lower():
+                return True
+            # Also search synonyms
+            for syn in m.get("synonyms") or []:
+                if query_lower in syn.lower():
+                    return True
+            return False
+
+        all_molecules = [m for m in all_molecules if matches_query(m)]
 
     # Sort by name and limit
     all_molecules.sort(key=lambda x: x["name"])

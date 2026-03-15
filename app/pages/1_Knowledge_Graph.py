@@ -335,13 +335,22 @@ with col2:
             )
 
             entity_props = solvent_props or salt_props
+            curated_refs = []  # Collect references for provenance section
             if entity_props:
                 st.markdown("**Curated Properties:**")
                 prop_data = entity_props.get("properties", {})
                 for prop_name, prop_val in prop_data.items():
                     if isinstance(prop_val, dict) and "value" in prop_val:
                         unit = prop_val.get("unit", "")
+                        ref = prop_val.get("reference", "")
                         st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
+                        if ref:
+                            curated_refs.append({"property": prop_name, "reference": ref})
+                    elif isinstance(prop_val, dict) and prop_val.get("notes"):
+                        # Handle notes with references
+                        notes = prop_val.get("notes", "")
+                        if "source" in prop_name.lower() or "reference" in notes.lower():
+                            curated_refs.append({"property": prop_name, "reference": notes})
 
             # Show KG measurements (from datasets)
             measurements = get_measurements_for_molecule(selected_mol_id)
@@ -405,7 +414,10 @@ with col2:
             st.markdown("**Data Sources:**")
 
             provenance = get_provenance_for_molecule(selected_mol_id)
+            has_any_provenance = False
+
             if provenance:
+                has_any_provenance = True
                 # Group by source
                 by_source = {}
                 for p in provenance:
@@ -437,7 +449,15 @@ with col2:
                         st.caption(f"Rows: {row_str} | Data: {types}")
                     else:
                         st.caption(f"Data: {types}")
-            else:
+
+            # Show curated property references
+            if curated_refs:
+                has_any_provenance = True
+                st.markdown("**Curated Properties (Literature):**")
+                for ref_info in curated_refs:
+                    st.caption(f"- {ref_info['property']}: {ref_info['reference']}")
+
+            if not has_any_provenance:
                 st.caption("No provenance information available")
     else:
         st.info("No molecules to display with current filters")
