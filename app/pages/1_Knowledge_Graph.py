@@ -86,32 +86,50 @@ st.sidebar.header("Filters")
 
 entity_types = st.sidebar.multiselect(
     "Entity Types",
-    ["solvent", "salt"],
+    ["solvent", "salt", "molecule", "interphase"],
     default=["solvent", "salt"]
 )
 
-search_query = st.sidebar.text_input("Search molecules", placeholder="e.g., EC, LiPF6")
+search_query = st.sidebar.text_input(
+    "Search molecules",
+    placeholder="e.g., carbonate, lithium, EC"
+)
 
-# Get data
-molecules = get_molecules_for_graph()
-relations = get_relations_for_graph()
+max_nodes = st.sidebar.slider(
+    "Max nodes to display",
+    min_value=10,
+    max_value=200,
+    value=50,
+    step=10,
+    help="Limit nodes for performance. Use search to find specific molecules."
+)
+
+st.sidebar.markdown("---")
+st.sidebar.caption(f"KG contains 23,421 molecules total. Use search and filters to explore.")
+
+# Get data from actual KG
+molecules = get_molecules_for_graph(
+    search_query=search_query,
+    entity_types=entity_types,
+    max_nodes=max_nodes
+)
 kg_data = load_kg_provenance()
 
-# Filter molecules
-filtered_molecules = [
-    m for m in molecules
-    if m["type"] in entity_types
-    and (not search_query or search_query.upper() in m["id"].upper() or
-         search_query.lower() in m["name"].lower())
-]
+# Get relations for the displayed molecules
+molecule_ids = {m["id"] for m in molecules}
+relations = get_relations_for_graph(molecule_ids=molecule_ids)
+
+filtered_molecules = molecules  # Already filtered by get_molecules_for_graph
 
 # Build graph
 nodes = []
 edges = []
 
 colors = {
-    "solvent": "#4A90D9",
-    "salt": "#50C878",
+    "solvent": "#4A90D9",   # Blue
+    "salt": "#50C878",       # Green
+    "molecule": "#9B59B6",   # Purple
+    "interphase": "#E67E22", # Orange
 }
 
 for mol in filtered_molecules:
@@ -178,11 +196,11 @@ with col1:
     else:
         st.info("No molecules match the current filters.")
 
-    st.markdown("""
+    st.markdown(f"""
+    **Showing {len(filtered_molecules)} molecules, {len(relations)} relations**
+
     **Legend:**
-    🔵 Solvent | 🟢 Salt |
-    <span style="color: #FF6B6B">—</span> usedWith |
-    <span style="color: #888888">—</span> coOccursWith
+    🔵 Solvent | 🟢 Salt | 🟣 Molecule | 🟠 Interphase
     """, unsafe_allow_html=True)
 
 with col2:

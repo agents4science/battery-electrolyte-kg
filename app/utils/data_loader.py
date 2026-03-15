@@ -9,6 +9,16 @@ import streamlit as st
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
+@st.cache_data
+def load_full_kg():
+    """Load the full knowledge graph."""
+    kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v3.json"
+    if kg_path.exists():
+        with open(kg_path) as f:
+            return json.load(f)
+    return None
+
+
 # SMILES data for common compounds
 COMPOUND_SMILES = {
     # Salts
@@ -154,75 +164,179 @@ def get_data_sources():
     ]
 
 
-def get_molecules_for_graph():
-    """Get molecule data for graph visualization."""
+@st.cache_data
+def get_all_molecules_from_kg():
+    """Get all molecules from the KG with their types."""
+    kg = load_full_kg()
+    if not kg:
+        return []
+
     molecules = []
 
+    # Add molecules
+    for mol_id, mol in kg.get("molecules", {}).items():
+        molecules.append({
+            "id": mol_id,
+            "name": mol.get("name", mol_id[:12]),
+            "smiles": mol.get("smiles", ""),
+            "type": "molecule",
+            "source": "molecules",
+        })
+
     # Add solvents
-    for abbrev, smiles in COMPOUND_SMILES.items():
-        if not abbrev.startswith("Li"):  # Not a salt
-            molecules.append({
-                "id": abbrev,
-                "name": COMPOUND_NAMES.get(abbrev, abbrev),
-                "smiles": smiles,
-                "type": "solvent",
-            })
+    for sol_id, sol in kg.get("solvents", {}).items():
+        molecules.append({
+            "id": sol_id,
+            "name": sol.get("name", sol_id[:12]),
+            "smiles": sol.get("smiles", ""),
+            "type": "solvent",
+            "source": "solvents",
+        })
 
     # Add salts
-    for abbrev, smiles in COMPOUND_SMILES.items():
-        if abbrev.startswith("Li"):
-            molecules.append({
-                "id": abbrev,
-                "name": COMPOUND_NAMES.get(abbrev, abbrev),
-                "smiles": smiles,
-                "type": "salt",
-            })
+    for salt_id, salt in kg.get("salts", {}).items():
+        molecules.append({
+            "id": salt_id,
+            "name": salt.get("name", salt_id[:12]),
+            "smiles": salt.get("smiles", ""),
+            "type": "salt",
+            "source": "salts",
+        })
+
+    # Add interphase species
+    for sp_id, sp in kg.get("interphase_species", {}).items():
+        molecules.append({
+            "id": sp_id,
+            "name": sp.get("name", sp_id[:12]),
+            "smiles": sp.get("smiles", ""),
+            "type": "interphase",
+            "source": "interphase_species",
+        })
 
     return molecules
 
 
-def get_relations_for_graph():
-    """Get relations for graph visualization."""
+@st.cache_data
+def get_all_relations_from_kg():
+    """Get all relations from the KG."""
+    kg = load_full_kg()
+    if not kg:
+        return []
+
     relations = []
-
-    # Common solvent-salt combinations based on CALiSol data
-    common_pairs = [
-        ("EC", "LiPF6"),
-        ("PC", "LiPF6"),
-        ("DMC", "LiPF6"),
-        ("EMC", "LiPF6"),
-        ("DEC", "LiPF6"),
-        ("EC", "LiBF4"),
-        ("PC", "LiBF4"),
-        ("EC", "LiTFSI"),
-        ("DME", "LiTFSI"),
-        ("AN", "LiPF6"),
-        ("DMSO", "LiTFSI"),
-        ("FEC", "LiPF6"),
-    ]
-
-    for solvent, salt in common_pairs:
-        relations.append({
-            "source": solvent,
-            "target": salt,
-            "type": "usedWith",
-        })
-
-    # Solvent co-occurrence patterns
-    cooccur = [
-        ("EC", "DMC"),
-        ("EC", "EMC"),
-        ("EC", "DEC"),
-        ("EC", "PC"),
-        ("PC", "EMC"),
-        ("DMC", "EMC"),
-    ]
-
-    for s1, s2 in cooccur:
-        relations.append({
-            "source": s1,
-            "target": s2,
-            "type": "coOccursWith",
-        })
+    for rel in kg.get("relations", []):
+        if len(rel) >= 3:
+            relations.append({
+                "source": rel[0],
+                "type": rel[1],
+                "target": rel[2],
+            })
 
     return relations
+
+
+def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
+    """
+    Get molecule data for graph visualization.
+
+    Args:
+        search_query: Filter by name/SMILES
+        entity_types: List of types to include
+        max_nodes: Maximum nodes to return (for performance)
+    """
+    all_molecules = get_all_molecules_from_kg()
+
+    if not all_molecules:
+        # Fallback to hardcoded if KG not available
+        molecules = []
+        for abbrev, smiles in COMPOUND_SMILES.items():
+            mol_type = "salt" if abbrev.startswith("Li") else "solvent"
+            molecules.append({
+                "id": abbrev,
+                "name": COMPOUND_NAMES.get(abbrev, abbrev),
+                "smiles": smiles,
+                "type": mol_type,
+            })
+        return molecules
+
+    # Filter by type
+    if entity_types:
+        all_molecules = [m for m in all_molecules if m["type"] in entity_types]
+
+    # Filter by search query
+    if search_query:
+        query_lower = search_query.lower()
+        all_molecules = [
+            m for m in all_molecules
+            if query_lower in m["name"].lower() or query_lower in m.get("smiles", "").lower()
+        ]
+
+    # Sort by name and limit
+    all_molecules.sort(key=lambda x: x["name"])
+
+    return all_molecules[:max_nodes]
+
+
+def get_relations_for_graph(molecule_ids=None):
+    """
+    Get relations for graph visualization.
+
+    Args:
+        molecule_ids: Set of molecule IDs to filter relations (only show relations between these)
+    """
+    all_relations = get_all_relations_from_kg()
+
+    if not all_relations:
+        # Fallback to hardcoded
+        relations = []
+        common_pairs = [
+            ("EC", "LiPF6"),
+            ("PC", "LiPF6"),
+            ("DMC", "LiPF6"),
+            ("EMC", "LiPF6"),
+            ("DEC", "LiPF6"),
+            ("EC", "LiBF4"),
+            ("PC", "LiBF4"),
+            ("EC", "LiTFSI"),
+            ("DME", "LiTFSI"),
+            ("AN", "LiPF6"),
+            ("DMSO", "LiTFSI"),
+            ("FEC", "LiPF6"),
+        ]
+
+        for solvent, salt in common_pairs:
+            relations.append({
+                "source": solvent,
+                "target": salt,
+                "type": "usedWith",
+            })
+
+        # Solvent co-occurrence patterns
+        cooccur = [
+            ("EC", "DMC"),
+            ("EC", "EMC"),
+            ("EC", "DEC"),
+            ("EC", "PC"),
+            ("PC", "EMC"),
+            ("DMC", "EMC"),
+        ]
+
+        for s1, s2 in cooccur:
+            relations.append({
+                "source": s1,
+                "target": s2,
+                "type": "coOccursWith",
+            })
+
+        return relations
+
+    # Filter to only relations between specified molecules
+    if molecule_ids:
+        molecule_ids = set(molecule_ids)
+        filtered = [
+            r for r in all_relations
+            if r["source"] in molecule_ids and r["target"] in molecule_ids
+        ]
+        return filtered
+
+    return all_relations
