@@ -122,6 +122,9 @@ relations = get_relations_for_graph(molecule_ids=molecule_ids)
 
 filtered_molecules = molecules  # Already filtered by get_molecules_for_graph
 
+# Create name lookup for display (ID -> name)
+mol_name_lookup = {m["id"]: m.get("name", m["id"][:12]) for m in molecules}
+
 # Build graph
 nodes = []
 edges = []
@@ -186,9 +189,9 @@ config = Config(
         "labelProperty": "label",
         "renderLabel": True,
     },
-    # Use staticGraphWithDragAndDrop to prevent double-click navigation issues
-    staticGraph=False,
-    staticGraphWithDragAndDrop=True,
+    # Static graph to prevent double-click navigation errors
+    staticGraph=True,
+    staticGraphWithDragAndDrop=False,
 )
 
 # Main layout
@@ -298,10 +301,8 @@ with col2:
         rel_options = []
         for rel in relations:
             if rel["source"] in visible_ids and rel["target"] in visible_ids:
-                source_mol = next((m for m in molecules if m["id"] == rel["source"]), None)
-                target_mol = next((m for m in molecules if m["id"] == rel["target"]), None)
-                source_name = source_mol["name"] if source_mol else rel["source"][:12]
-                target_name = target_mol["name"] if target_mol else rel["target"][:12]
+                source_name = mol_name_lookup.get(rel["source"], rel["source"][:12])
+                target_name = mol_name_lookup.get(rel["target"], rel["target"][:12])
                 label = f"{source_name} ↔ {target_name} ({rel['type']})"
                 rel_options.append((label, rel))
 
