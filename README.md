@@ -100,7 +100,13 @@ The knowledge graph integrates five primary data sources, each contributing uniq
 | **Salts** | 4 |
 | **Method** | Literature DFT values |
 
-**Description**: Hand-curated reference properties for common battery solvents, serving as a "bridge" dataset to link molecules across different data sources via SMILES matching.
+**Description**: Reference properties for common battery solvents compiled from published literature, serving as a "bridge" dataset to link molecules across different data sources via SMILES matching.
+
+**Primary Sources**:
+- Qu et al. 2015 ([DOI:10.1016/j.commatsci.2015.02.050](https://doi.org/10.1016/j.commatsci.2015.02.050)) - Ionization energies from Electrolyte Genome
+- CRC Handbook of Chemistry and Physics - Dielectric constants
+- NIST Chemistry WebBook - Experimental ionization energies
+- PMC9779264 - Electron affinities and LUMO energies for carbonates
 
 **Properties per Molecule**:
 - Ionization energy (eV)
