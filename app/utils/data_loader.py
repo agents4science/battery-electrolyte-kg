@@ -443,45 +443,71 @@ def get_relations_for_molecule(molecule_id, molecule_name=None):
                 "other_smiles": other_mol.get("smiles", ""),
             })
 
-    # Also check hardcoded relations for common compounds
+    # Also check hardcoded relations for common compounds with provenance
+    LITHIUM_PROV = {
+        "source_name": "CALiSol-23 Dataset",
+        "source_doi": "10.1038/s41597-022-01527-8",
+        "evidence": "Formulation co-occurrence in conductivity measurements"
+    }
+    SODIUM_PROV = {
+        "source_name": "Ponrouch et al. 2012",
+        "source_doi": "10.1039/C2EE22258B",
+        "evidence": "Sodium electrolyte benchmarking study"
+    }
+    COOCCUR_PROV = {
+        "source_name": "CALiSol-23 Dataset",
+        "source_doi": "10.1038/s41597-022-01527-8",
+        "evidence": "Solvent co-occurrence frequency > 50% in formulations"
+    }
+
     hardcoded_pairs = [
-        ("EC", "LiPF6"), ("PC", "LiPF6"), ("DMC", "LiPF6"),
-        ("EMC", "LiPF6"), ("DEC", "LiPF6"), ("EC", "LiBF4"),
-        ("PC", "LiBF4"), ("EC", "LiTFSI"), ("DME", "LiTFSI"),
-        ("EC", "DMC"), ("EC", "EMC"), ("EC", "DEC"), ("EC", "PC"),
-        ("DMC", "EMC"), ("PC", "EMC"),
-        # Sodium pairs
-        ("EC", "NaPF6"), ("PC", "NaPF6"), ("EC", "NaClO4"),
-        ("PC", "NaClO4"), ("DME", "NaTFSI"), ("EC", "NaTFSI"),
-        ("EC", "NaFSI"), ("PC", "NaBF4"), ("DME", "NaFSI"),
+        # Lithium salt pairings
+        ("EC", "LiPF6", LITHIUM_PROV), ("PC", "LiPF6", LITHIUM_PROV),
+        ("DMC", "LiPF6", LITHIUM_PROV), ("EMC", "LiPF6", LITHIUM_PROV),
+        ("DEC", "LiPF6", LITHIUM_PROV), ("EC", "LiBF4", LITHIUM_PROV),
+        ("PC", "LiBF4", LITHIUM_PROV), ("EC", "LiTFSI", LITHIUM_PROV),
+        ("DME", "LiTFSI", LITHIUM_PROV),
+        # Solvent co-occurrence
+        ("EC", "DMC", COOCCUR_PROV), ("EC", "EMC", COOCCUR_PROV),
+        ("EC", "DEC", COOCCUR_PROV), ("EC", "PC", COOCCUR_PROV),
+        ("DMC", "EMC", COOCCUR_PROV), ("PC", "EMC", COOCCUR_PROV),
+        # Sodium salt pairings
+        ("EC", "NaPF6", SODIUM_PROV), ("PC", "NaPF6", SODIUM_PROV),
+        ("EC", "NaClO4", SODIUM_PROV), ("PC", "NaClO4", SODIUM_PROV),
+        ("DME", "NaTFSI", SODIUM_PROV), ("EC", "NaTFSI", SODIUM_PROV),
+        ("EC", "NaFSI", SODIUM_PROV), ("PC", "NaBF4", SODIUM_PROV),
+        ("DME", "NaFSI", SODIUM_PROV),
     ]
 
     # Track what we've already added to avoid duplicates
     added = {(r["other_id"], r["type"]) for r in relations}
 
-    for s1, s2 in hardcoded_pairs:
-        if s1 in match_ids and (s2, "usedWith") not in added:
+    for s1, s2, prov in hardcoded_pairs:
+        rel_type = "usedWith" if s2.startswith(("Li", "Na")) else "coOccursWith"
+        if s1 in match_ids and (s2, rel_type) not in added:
             other = mol_lookup.get(s2, {"name": COMPOUND_NAMES.get(s2, s2), "type": "unknown", "smiles": COMPOUND_SMILES.get(s2, "")})
             relations.append({
                 "direction": "outgoing",
-                "type": "usedWith",
+                "type": rel_type,
                 "other_id": s2,
                 "other_name": other.get("name", s2),
                 "other_type": other.get("type", "salt" if s2.startswith(("Li", "Na")) else "solvent"),
                 "other_smiles": other.get("smiles", ""),
+                "provenance": prov,
             })
-            added.add((s2, "usedWith"))
-        elif s2 in match_ids and (s1, "usedWith") not in added:
+            added.add((s2, rel_type))
+        elif s2 in match_ids and (s1, rel_type) not in added:
             other = mol_lookup.get(s1, {"name": COMPOUND_NAMES.get(s1, s1), "type": "unknown", "smiles": COMPOUND_SMILES.get(s1, "")})
             relations.append({
                 "direction": "incoming",
-                "type": "usedWith",
+                "type": rel_type,
                 "other_id": s1,
                 "other_name": other.get("name", s1),
                 "other_type": other.get("type", "salt" if s1.startswith(("Li", "Na")) else "solvent"),
                 "other_smiles": other.get("smiles", ""),
+                "provenance": prov,
             })
-            added.add((s1, "usedWith"))
+            added.add((s1, rel_type))
 
     return relations
 
@@ -625,29 +651,52 @@ def get_relations_for_graph(molecule_ids=None):
 
     relations = []
 
-    # Common solvent-salt pairings (usedWith)
+    # Common solvent-salt pairings (usedWith) with provenance
+    # Lithium salts: CALiSol-23 dataset (DOI:10.1038/s41597-022-01527-8)
+    # Sodium salts: Ponrouch et al. 2012 (DOI:10.1039/C2EE22258B)
+    LITHIUM_PROV = {
+        "source_name": "CALiSol-23 Dataset",
+        "source_doi": "10.1038/s41597-022-01527-8",
+        "evidence": "Formulation co-occurrence in conductivity measurements"
+    }
+    SODIUM_PROV = {
+        "source_name": "Ponrouch et al. 2012",
+        "source_doi": "10.1039/C2EE22258B",
+        "evidence": "Sodium electrolyte benchmarking study"
+    }
+
     common_pairs = [
-        ("EC", "LiPF6"), ("PC", "LiPF6"), ("DMC", "LiPF6"),
-        ("EMC", "LiPF6"), ("DEC", "LiPF6"), ("EC", "LiBF4"),
-        ("PC", "LiBF4"), ("EC", "LiTFSI"), ("DME", "LiTFSI"),
-        ("AN", "LiPF6"), ("DMSO", "LiTFSI"), ("FEC", "LiPF6"),
-        # Sodium salts
-        ("EC", "NaPF6"), ("PC", "NaPF6"), ("DMC", "NaPF6"),
-        ("EC", "NaClO4"), ("PC", "NaClO4"), ("DME", "NaTFSI"),
-        ("EC", "NaTFSI"), ("EC", "NaFSI"), ("PC", "NaBF4"),
+        # Lithium salts (from CALiSol-23)
+        ("EC", "LiPF6", LITHIUM_PROV), ("PC", "LiPF6", LITHIUM_PROV),
+        ("DMC", "LiPF6", LITHIUM_PROV), ("EMC", "LiPF6", LITHIUM_PROV),
+        ("DEC", "LiPF6", LITHIUM_PROV), ("EC", "LiBF4", LITHIUM_PROV),
+        ("PC", "LiBF4", LITHIUM_PROV), ("EC", "LiTFSI", LITHIUM_PROV),
+        ("DME", "LiTFSI", LITHIUM_PROV), ("AN", "LiPF6", LITHIUM_PROV),
+        ("DMSO", "LiTFSI", LITHIUM_PROV), ("FEC", "LiPF6", LITHIUM_PROV),
+        # Sodium salts (from Ponrouch et al.)
+        ("EC", "NaPF6", SODIUM_PROV), ("PC", "NaPF6", SODIUM_PROV),
+        ("DMC", "NaPF6", SODIUM_PROV), ("EC", "NaClO4", SODIUM_PROV),
+        ("PC", "NaClO4", SODIUM_PROV), ("DME", "NaTFSI", SODIUM_PROV),
+        ("EC", "NaTFSI", SODIUM_PROV), ("EC", "NaFSI", SODIUM_PROV),
+        ("PC", "NaBF4", SODIUM_PROV),
     ]
 
-    for solvent, salt in common_pairs:
-        # Try to resolve to KG IDs, fallback to abbreviation
+    for solvent, salt, prov in common_pairs:
         src_id = name_to_id.get(solvent, solvent)
         tgt_id = name_to_id.get(salt, salt)
         relations.append({
             "source": src_id,
             "target": tgt_id,
             "type": "usedWith",
+            "provenance": prov,
         })
 
-    # Solvent co-occurrence patterns
+    # Solvent co-occurrence patterns (from CALiSol-23 formulation analysis)
+    COOCCUR_PROV = {
+        "source_name": "CALiSol-23 Dataset",
+        "source_doi": "10.1038/s41597-022-01527-8",
+        "evidence": "Solvent co-occurrence frequency > 50% in formulations"
+    }
     cooccur = [
         ("EC", "DMC"), ("EC", "EMC"), ("EC", "DEC"),
         ("EC", "PC"), ("PC", "EMC"), ("DMC", "EMC"),
@@ -661,6 +710,7 @@ def get_relations_for_graph(molecule_ids=None):
             "source": src_id,
             "target": tgt_id,
             "type": "coOccursWith",
+            "provenance": COOCCUR_PROV,
         })
 
     # Add KG molecule-to-molecule relations (sameAs, decomposesTo)
@@ -722,11 +772,15 @@ def get_relations_for_graph(molecule_ids=None):
 
         normalized = []
         for r in filtered:
-            normalized.append({
+            norm_rel = {
                 "source": normalize_id(r["source"]),
                 "target": normalize_id(r["target"]),
                 "type": r["type"],
-            })
+            }
+            # Preserve provenance if present
+            if "provenance" in r:
+                norm_rel["provenance"] = r["provenance"]
+            normalized.append(norm_rel)
 
         return normalized
 

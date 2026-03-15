@@ -402,6 +402,18 @@ with col2:
                         for rel in rels[:15]:
                             arrow = "→" if rel["direction"] == "outgoing" else "←"
                             st.markdown(f"- {arrow} {rel['other_name']} ({rel['other_type']})")
+                            # Show provenance if available
+                            prov = rel.get("provenance")
+                            if prov:
+                                doi = prov.get("source_doi", "")
+                                src_name = prov.get("source_name", "")
+                                evidence = prov.get("evidence", "")
+                                if doi:
+                                    st.caption(f"  Source: [{src_name}](https://doi.org/{doi})")
+                                elif src_name:
+                                    st.caption(f"  Source: {src_name}")
+                                if evidence:
+                                    st.caption(f"  Evidence: {evidence}")
                         if len(rels) > 15:
                             st.caption(f"...and {len(rels) - 15} more")
 
