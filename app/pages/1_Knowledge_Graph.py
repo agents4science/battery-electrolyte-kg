@@ -254,27 +254,42 @@ with col2:
                     unit = prop_val.get("unit", "")
                     st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
 
-        # Show connections
+        # Show connections with explanations
         st.markdown("---")
-        st.markdown("**Connections:**")
+        st.markdown("**Relationships** (click to see explanation):")
         node_relations = []
         for rel in relations:
             if rel["source"] == selected_node_id:
                 target_mol = next((m for m in molecules if m["id"] == rel["target"]), None)
                 target_name = target_mol["name"] if target_mol else rel["target"][:12]
-                node_relations.append(f"→ {rel['type']} → {target_name}")
+                node_relations.append({
+                    "label": f"→ **{rel['type']}** → {target_name}",
+                    "type": rel["type"],
+                    "other": target_name
+                })
             elif rel["target"] == selected_node_id:
                 source_mol = next((m for m in molecules if m["id"] == rel["source"]), None)
                 source_name = source_mol["name"] if source_mol else rel["source"][:12]
-                node_relations.append(f"← {rel['type']} ← {source_name}")
+                node_relations.append({
+                    "label": f"← **{rel['type']}** ← {source_name}",
+                    "type": rel["type"],
+                    "other": source_name
+                })
 
         if node_relations:
-            for r in node_relations[:8]:
-                st.markdown(f"  {r}")
-            if len(node_relations) > 8:
-                st.caption(f"...and {len(node_relations) - 8} more")
+            for r in node_relations[:10]:
+                with st.expander(r["label"]):
+                    explanation = RELATION_EXPLANATIONS.get(r["type"], {})
+                    if explanation:
+                        st.markdown(f"**Method:** {explanation.get('method', 'Unknown')}")
+                        st.markdown(explanation.get('description', ''))
+                        st.caption(f"Basis: {explanation.get('basis', 'N/A')}")
+                    else:
+                        st.caption("No detailed explanation available")
+            if len(node_relations) > 10:
+                st.caption(f"...and {len(node_relations) - 10} more relationships")
         else:
-            st.caption("No connections in current view")
+            st.caption("No relationships in current view")
     else:
         st.info("Click a node in the graph to see its details")
 
