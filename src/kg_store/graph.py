@@ -22,6 +22,28 @@ from ..schema.relations import RelationType
 T = TypeVar("T", bound=BaseModel)
 
 
+def canonicalize_smiles(smiles: Optional[str]) -> Optional[str]:
+    """
+    Canonicalize a SMILES string for deduplication.
+
+    Uses RDKit if available, otherwise returns the input unchanged.
+    """
+    if not smiles:
+        return None
+
+    # Try RDKit for proper canonicalization
+    try:
+        from rdkit import Chem
+        mol = Chem.MolFromSmiles(smiles)
+        if mol:
+            return Chem.MolToSmiles(mol, canonical=True)
+    except ImportError:
+        pass
+
+    # Fallback: return as-is (not ideal but works for exact matches)
+    return smiles.strip()
+
+
 class KnowledgeGraph:
     """
     Main Knowledge Graph for electrolyte discovery.
@@ -47,6 +69,9 @@ class KnowledgeGraph:
         self._methods: dict[str, MeasurementMethod] = {}
         self._interphase_species: dict[str, InterphaseSpecies] = {}
         self._sources: dict[str, EvidenceSource] = {}
+
+        # SMILES deduplication index: canonical_smiles -> molecule_id
+        self._smiles_to_molecule_id: dict[str, str] = {}
 
         # Property types (auto-initialized after graph)
         self._property_types: dict[str, PropertyTypeEntity] = {}
@@ -78,31 +103,140 @@ class KnowledgeGraph:
 
     # --- Entity Management ---
 
-    def add_molecule(self, molecule: Molecule) -> str:
-        """Add a molecule to the KG."""
+    def _find_existing_molecule_by_smiles(self, smiles: Optional[str]) -> Optional[str]:
+        """Find an existing molecule ID by canonical SMILES."""
+        if not smiles:
+            return None
+        canonical = canonicalize_smiles(smiles)
+        if canonical:
+            return self._smiles_to_molecule_id.get(canonical)
+        return None
+
+    def _index_molecule_smiles(self, molecule_id: str, smiles: Optional[str]) -> None:
+        """Add molecule to SMILES index."""
+        if smiles:
+            canonical = canonicalize_smiles(smiles)
+            if canonical:
+                self._smiles_to_molecule_id[canonical] = molecule_id
+
+    def _merge_molecule_data(self, existing: Molecule, new: Molecule) -> Molecule:
+        """
+        Merge data from a new molecule into an existing one.
+
+        Prefers the better name (longer, non-SMILES), merges synonyms.
+        """
+        # Prefer longer, non-SMILES name
+        existing_name = existing.name or ""
+        new_name = new.name or ""
+
+        # Check if name looks like SMILES (contains special chars)
+        def is_smiles_like(name: str) -> bool:
+            return any(c in name for c in "()[]=#@+-/\\")
+
+        if is_smiles_like(existing_name) and not is_smiles_like(new_name) and new_name:
+            existing.name = new_name
+        elif len(new_name) > len(existing_name) and not is_smiles_like(new_name):
+            existing.name = new_name
+
+        # Merge synonyms
+        existing_synonyms = set(existing.synonyms or [])
+        new_synonyms = set(new.synonyms or [])
+        # Add old name as synonym if replaced
+        if existing_name and existing_name != existing.name:
+            existing_synonyms.add(existing_name)
+        if new_name and new_name != existing.name:
+            new_synonyms.add(new_name)
+        existing.synonyms = list(existing_synonyms | new_synonyms)
+
+        # Merge other fields (prefer non-None values)
+        if new.inchi and not existing.inchi:
+            existing.inchi = new.inchi
+        if new.inchi_key and not existing.inchi_key:
+            existing.inchi_key = new.inchi_key
+        if new.pubchem_cid and not existing.pubchem_cid:
+            existing.pubchem_cid = new.pubchem_cid
+        if new.cas_number and not existing.cas_number:
+            existing.cas_number = new.cas_number
+        if new.molecular_weight and not existing.molecular_weight:
+            existing.molecular_weight = new.molecular_weight
+
+        return existing
+
+    def add_molecule(self, molecule: Molecule, deduplicate: bool = True) -> str:
+        """
+        Add a molecule to the KG.
+
+        If deduplicate=True and a molecule with the same SMILES exists,
+        merges the data and returns the existing molecule's ID.
+        """
+        if deduplicate and molecule.smiles:
+            existing_id = self._find_existing_molecule_by_smiles(molecule.smiles)
+            if existing_id and existing_id in self._molecules:
+                # Merge into existing
+                self._molecules[existing_id] = self._merge_molecule_data(
+                    self._molecules[existing_id], molecule
+                )
+                return existing_id
+
+        # Add as new molecule
         self._molecules[molecule.id] = molecule
         self._graph.add_node(molecule.id, type="Molecule", data=molecule)
+        self._index_molecule_smiles(molecule.id, molecule.smiles)
         return molecule.id
 
-    def add_solvent(self, solvent: Solvent) -> str:
-        """Add a solvent to the KG."""
+    def add_solvent(self, solvent: Solvent, deduplicate: bool = True) -> str:
+        """Add a solvent to the KG, deduplicating by SMILES."""
+        if deduplicate and solvent.smiles:
+            existing_id = self._find_existing_molecule_by_smiles(solvent.smiles)
+            if existing_id and existing_id in self._molecules:
+                self._molecules[existing_id] = self._merge_molecule_data(
+                    self._molecules[existing_id], solvent
+                )
+                # Also mark as solvent if not already
+                if existing_id not in self._solvents:
+                    self._solvents[existing_id] = self._molecules[existing_id]
+                return existing_id
+
         self._solvents[solvent.id] = solvent
         self._molecules[solvent.id] = solvent
         self._graph.add_node(solvent.id, type="Solvent", data=solvent)
+        self._index_molecule_smiles(solvent.id, solvent.smiles)
         return solvent.id
 
-    def add_salt(self, salt: Salt) -> str:
-        """Add a salt to the KG."""
+    def add_salt(self, salt: Salt, deduplicate: bool = True) -> str:
+        """Add a salt to the KG, deduplicating by SMILES."""
+        if deduplicate and salt.smiles:
+            existing_id = self._find_existing_molecule_by_smiles(salt.smiles)
+            if existing_id and existing_id in self._molecules:
+                self._molecules[existing_id] = self._merge_molecule_data(
+                    self._molecules[existing_id], salt
+                )
+                if existing_id not in self._salts:
+                    self._salts[existing_id] = self._molecules[existing_id]
+                return existing_id
+
         self._salts[salt.id] = salt
         self._molecules[salt.id] = salt
         self._graph.add_node(salt.id, type="Salt", data=salt)
+        self._index_molecule_smiles(salt.id, salt.smiles)
         return salt.id
 
-    def add_additive(self, additive: Additive) -> str:
-        """Add an additive to the KG."""
+    def add_additive(self, additive: Additive, deduplicate: bool = True) -> str:
+        """Add an additive to the KG, deduplicating by SMILES."""
+        if deduplicate and additive.smiles:
+            existing_id = self._find_existing_molecule_by_smiles(additive.smiles)
+            if existing_id and existing_id in self._molecules:
+                self._molecules[existing_id] = self._merge_molecule_data(
+                    self._molecules[existing_id], additive
+                )
+                if existing_id not in self._additives:
+                    self._additives[existing_id] = self._molecules[existing_id]
+                return existing_id
+
         self._additives[additive.id] = additive
         self._molecules[additive.id] = additive
         self._graph.add_node(additive.id, type="Additive", data=additive)
+        self._index_molecule_smiles(additive.id, additive.smiles)
         return additive.id
 
     def add_formulation(self, formulation: ElectrolyteFormulation) -> str:
@@ -254,6 +388,111 @@ class KnowledgeGraph:
             1 for p in self._provenance.values() if p.is_complete()
         )
         return entities_with_prov / total_entities
+
+    # --- Deduplication ---
+
+    def deduplicate_molecules(self) -> dict:
+        """
+        Post-process the KG to merge duplicate molecules with the same SMILES.
+
+        This method:
+        1. Groups molecules by canonical SMILES
+        2. For each group, keeps the molecule with the best name
+        3. Merges all data (synonyms, properties) into the kept molecule
+        4. Updates all relations to point to the kept molecule
+        5. Removes duplicate molecules
+
+        Returns statistics about the deduplication.
+        """
+        from collections import defaultdict
+
+        stats = {
+            "molecules_before": len(self._molecules),
+            "duplicates_found": 0,
+            "molecules_merged": 0,
+            "relations_updated": 0,
+        }
+
+        # Group molecules by canonical SMILES
+        smiles_groups: dict[str, list[str]] = defaultdict(list)
+        for mol_id, mol in self._molecules.items():
+            if mol.smiles:
+                canonical = canonicalize_smiles(mol.smiles)
+                if canonical:
+                    smiles_groups[canonical].append(mol_id)
+
+        # Find groups with duplicates
+        duplicate_groups = {s: ids for s, ids in smiles_groups.items() if len(ids) > 1}
+        stats["duplicates_found"] = sum(len(ids) - 1 for ids in duplicate_groups.values())
+
+        # Process each group
+        id_mapping: dict[str, str] = {}  # old_id -> new_id
+
+        for canonical_smiles, mol_ids in duplicate_groups.items():
+            # Pick the best molecule to keep (prefer longer, non-SMILES name)
+            def name_score(mol_id: str) -> tuple:
+                mol = self._molecules[mol_id]
+                name = mol.name or ""
+                is_smiles = any(c in name for c in "()[]=#@+-/\\")
+                return (not is_smiles, len(name))
+
+            mol_ids_sorted = sorted(mol_ids, key=name_score, reverse=True)
+            keep_id = mol_ids_sorted[0]
+            remove_ids = mol_ids_sorted[1:]
+
+            # Merge all molecules into the kept one
+            keep_mol = self._molecules[keep_id]
+            for remove_id in remove_ids:
+                remove_mol = self._molecules[remove_id]
+                self._merge_molecule_data(keep_mol, remove_mol)
+                id_mapping[remove_id] = keep_id
+                stats["molecules_merged"] += 1
+
+        # Update relations to use new IDs
+        if id_mapping:
+            new_edges = []
+            edges_to_remove = []
+
+            for u, v, key, data in self._graph.edges(keys=True, data=True):
+                new_u = id_mapping.get(u, u)
+                new_v = id_mapping.get(v, v)
+                if new_u != u or new_v != v:
+                    edges_to_remove.append((u, v, key))
+                    new_edges.append((new_u, new_v, data))
+                    stats["relations_updated"] += 1
+
+            for u, v, key in edges_to_remove:
+                self._graph.remove_edge(u, v, key)
+
+            for new_u, new_v, data in new_edges:
+                self._graph.add_edge(new_u, new_v, **data)
+
+            # Update formulation component references
+            for form in self._formulations.values():
+                for comp in form.components:
+                    if comp.molecule_id in id_mapping:
+                        comp.molecule_id = id_mapping[comp.molecule_id]
+
+            # Remove duplicate molecules from stores
+            for old_id in id_mapping:
+                if old_id in self._molecules:
+                    del self._molecules[old_id]
+                if old_id in self._solvents:
+                    del self._solvents[old_id]
+                if old_id in self._salts:
+                    del self._salts[old_id]
+                if old_id in self._additives:
+                    del self._additives[old_id]
+                if self._graph.has_node(old_id):
+                    self._graph.remove_node(old_id)
+
+        # Rebuild SMILES index
+        self._smiles_to_molecule_id.clear()
+        for mol_id, mol in self._molecules.items():
+            self._index_molecule_smiles(mol_id, mol.smiles)
+
+        stats["molecules_after"] = len(self._molecules)
+        return stats
 
     # --- Querying ---
 
