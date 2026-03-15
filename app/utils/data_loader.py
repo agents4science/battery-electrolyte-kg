@@ -339,6 +339,89 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
     return all_molecules[:max_nodes]
 
 
+def get_relations_for_molecule(molecule_id):
+    """
+    Get ALL relations for a specific molecule from the full KG.
+
+    Returns list of relations where the molecule is either source or target,
+    along with info about the connected molecule.
+    """
+    all_relations = get_all_relations_from_kg()
+    all_molecules = get_all_molecules_from_kg()
+
+    # Build molecule lookup
+    mol_lookup = {m["id"]: m for m in all_molecules}
+
+    # Also add hardcoded compounds
+    for abbrev, smiles in COMPOUND_SMILES.items():
+        if abbrev not in mol_lookup:
+            mol_lookup[abbrev] = {
+                "id": abbrev,
+                "name": COMPOUND_NAMES.get(abbrev, abbrev),
+                "smiles": smiles,
+                "type": "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
+            }
+
+    relations = []
+    for rel in all_relations:
+        if rel["source"] == molecule_id:
+            other_mol = mol_lookup.get(rel["target"], {})
+            relations.append({
+                "direction": "outgoing",
+                "type": rel["type"],
+                "other_id": rel["target"],
+                "other_name": other_mol.get("name", rel["target"][:20]),
+                "other_type": other_mol.get("type", "unknown"),
+                "other_smiles": other_mol.get("smiles", ""),
+            })
+        elif rel["target"] == molecule_id:
+            other_mol = mol_lookup.get(rel["source"], {})
+            relations.append({
+                "direction": "incoming",
+                "type": rel["type"],
+                "other_id": rel["source"],
+                "other_name": other_mol.get("name", rel["source"][:20]),
+                "other_type": other_mol.get("type", "unknown"),
+                "other_smiles": other_mol.get("smiles", ""),
+            })
+
+    # Also check hardcoded relations for common compounds
+    if not relations:
+        # Check if this is a hardcoded compound
+        hardcoded_pairs = [
+            ("EC", "LiPF6"), ("PC", "LiPF6"), ("DMC", "LiPF6"),
+            ("EMC", "LiPF6"), ("DEC", "LiPF6"), ("EC", "LiBF4"),
+            ("PC", "LiBF4"), ("EC", "LiTFSI"), ("DME", "LiTFSI"),
+            ("EC", "DMC"), ("EC", "EMC"), ("EC", "DEC"), ("EC", "PC"),
+            # Sodium pairs
+            ("EC", "NaPF6"), ("PC", "NaPF6"), ("EC", "NaClO4"),
+            ("PC", "NaClO4"), ("DME", "NaTFSI"), ("EC", "NaTFSI"),
+        ]
+        for s1, s2 in hardcoded_pairs:
+            if molecule_id == s1:
+                other = mol_lookup.get(s2, {"name": s2, "type": "unknown", "smiles": ""})
+                relations.append({
+                    "direction": "outgoing",
+                    "type": "usedWith",
+                    "other_id": s2,
+                    "other_name": other.get("name", s2),
+                    "other_type": other.get("type", "unknown"),
+                    "other_smiles": other.get("smiles", ""),
+                })
+            elif molecule_id == s2:
+                other = mol_lookup.get(s1, {"name": s1, "type": "unknown", "smiles": ""})
+                relations.append({
+                    "direction": "incoming",
+                    "type": "usedWith",
+                    "other_id": s1,
+                    "other_name": other.get("name", s1),
+                    "other_type": other.get("type", "unknown"),
+                    "other_smiles": other.get("smiles", ""),
+                })
+
+    return relations
+
+
 def get_relations_for_graph(molecule_ids=None):
     """
     Get relations for graph visualization.

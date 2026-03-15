@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.data_loader import (
     get_molecules_for_graph,
     get_relations_for_graph,
+    get_relations_for_molecule,
     load_curated_properties,
     COMPOUND_NAMES,
     COMPOUND_SMILES,
@@ -310,40 +311,38 @@ with col2:
                         unit = prop_val.get("unit", "")
                         st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
 
-            # Show relationships with explanations
+            # Show ALL relationships from full KG (not just visible ones)
             st.markdown("---")
-            st.markdown("**Relationships** (click to expand):")
+            st.markdown("**All Connections in KG:**")
 
-            node_relations = []
-            for rel in relations:
-                if rel["source"] == selected_mol_id:
-                    target_name = mol_name_lookup.get(rel["target"], rel["target"][:12])
-                    node_relations.append({
-                        "label": f"→ **{rel['type']}** → {target_name}",
-                        "type": rel["type"],
-                        "other": target_name
-                    })
-                elif rel["target"] == selected_mol_id:
-                    source_name = mol_name_lookup.get(rel["source"], rel["source"][:12])
-                    node_relations.append({
-                        "label": f"← **{rel['type']}** ← {source_name}",
-                        "type": rel["type"],
-                        "other": source_name
-                    })
+            # Get all relations for this molecule from the full KG
+            all_mol_relations = get_relations_for_molecule(selected_mol_id)
 
-            if node_relations:
-                for r in node_relations[:10]:
-                    with st.expander(r["label"]):
-                        explanation = RELATION_EXPLANATIONS.get(r["type"], {})
+            if all_mol_relations:
+                # Group by relation type
+                by_type = {}
+                for rel in all_mol_relations:
+                    rel_type = rel["type"]
+                    if rel_type not in by_type:
+                        by_type[rel_type] = []
+                    by_type[rel_type].append(rel)
+
+                for rel_type, rels in by_type.items():
+                    explanation = RELATION_EXPLANATIONS.get(rel_type, {})
+                    with st.expander(f"**{rel_type}** ({len(rels)} connections)"):
                         if explanation:
-                            st.markdown(f"**Method:** {explanation.get('method', 'Unknown')}")
+                            st.caption(f"Method: {explanation.get('method', 'Unknown')}")
                             st.markdown(explanation.get('description', ''))
-                            st.caption(f"Basis: {explanation.get('basis', 'N/A')}")
-                        else:
-                            st.caption("No detailed explanation available")
-                if len(node_relations) > 10:
-                    st.caption(f"...and {len(node_relations) - 10} more relationships")
+
+                        st.markdown("**Connected to:**")
+                        for rel in rels[:15]:
+                            arrow = "→" if rel["direction"] == "outgoing" else "←"
+                            st.markdown(f"- {arrow} {rel['other_name']} ({rel['other_type']})")
+                        if len(rels) > 15:
+                            st.caption(f"...and {len(rels) - 15} more")
+
+                st.caption(f"Total: {len(all_mol_relations)} connections")
             else:
-                st.caption("No relationships in current view")
+                st.caption("No connections found in knowledge graph")
     else:
         st.info("No molecules to display with current filters")
