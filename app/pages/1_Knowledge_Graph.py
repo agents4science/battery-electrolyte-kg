@@ -215,79 +215,100 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-    # Relationship selector
-    st.subheader("🔍 Explain Relationship")
+    # Show selected node info prominently
+    st.subheader("📋 Node Details")
 
-    # Build list of relationships for dropdown
-    rel_options = []
-    for rel in relations:
-        if rel["source"] in visible_ids and rel["target"] in visible_ids:
-            label = f"{rel['source']} ↔ {rel['target']} ({rel['type']})"
-            rel_options.append((label, rel))
+    selected_node_id = st.session_state.get('selected_node')
+    selected_mol_data = None
 
-    if rel_options:
-        selected_label = st.selectbox(
-            "Select a relationship to explain",
-            [r[0] for r in rel_options],
-            index=0
+    if selected_node_id:
+        selected_mol_data = next((m for m in molecules if m["id"] == selected_node_id), None)
+
+    if selected_mol_data:
+        st.markdown(f"### {selected_mol_data['name']}")
+        st.markdown(f"**Type:** {selected_mol_data['type'].title()}")
+        if selected_mol_data.get('smiles'):
+            st.code(selected_mol_data['smiles'], language=None)
+
+        # Show curated properties if available
+        props = load_curated_properties()
+        solvent_props = next(
+            (s for s in props.get("solvents", [])
+             if s.get("abbreviation") == selected_mol_data.get("name") or
+                s.get("name") == selected_mol_data.get("name")),
+            None
+        )
+        salt_props = next(
+            (s for s in props.get("salts", [])
+             if s.get("abbreviation") == selected_mol_data.get("name") or
+                s.get("name") == selected_mol_data.get("name")),
+            None
         )
 
-        # Find the selected relation
-        selected_rel = next((r[1] for r in rel_options if r[0] == selected_label), None)
+        entity_props = solvent_props or salt_props
+        if entity_props:
+            st.markdown("**Properties:**")
+            prop_data = entity_props.get("properties", {})
+            for prop_name, prop_val in prop_data.items():
+                if isinstance(prop_val, dict) and "value" in prop_val:
+                    unit = prop_val.get("unit", "")
+                    st.markdown(f"- {prop_name}: {prop_val['value']} {unit}")
 
-        if selected_rel:
-            rel_type = selected_rel["type"]
-            source = selected_rel["source"]
-            target = selected_rel["target"]
+        # Show connections
+        st.markdown("---")
+        st.markdown("**Connections:**")
+        node_relations = []
+        for rel in relations:
+            if rel["source"] == selected_node_id:
+                target_mol = next((m for m in molecules if m["id"] == rel["target"]), None)
+                target_name = target_mol["name"] if target_mol else rel["target"][:12]
+                node_relations.append(f"→ {rel['type']} → {target_name}")
+            elif rel["target"] == selected_node_id:
+                source_mol = next((m for m in molecules if m["id"] == rel["source"]), None)
+                source_name = source_mol["name"] if source_mol else rel["source"][:12]
+                node_relations.append(f"← {rel['type']} ← {source_name}")
 
-            # Show relationship details
-            st.markdown(f"### {source} ↔ {target}")
-            st.markdown(f"**Relation:** `{rel_type}`")
-
-            # Get explanation
-            explanation = RELATION_EXPLANATIONS.get(rel_type, {})
-
-            if explanation:
-                st.info(f"**Method:** {explanation.get('method', 'Unknown')}")
-                st.markdown(explanation.get('description', ''))
-                st.caption(f"**Basis:** {explanation.get('basis', 'N/A')}")
-
-            # Show SMILES for both entities
-            st.markdown("---")
-            st.markdown("**Entities:**")
-
-            source_mol = next((m for m in molecules if m["id"] == source), None)
-            target_mol = next((m for m in molecules if m["id"] == target), None)
-
-            if source_mol:
-                st.markdown(f"**{source}** ({source_mol['type']})")
-                st.code(source_mol['smiles'], language=None)
-
-            if target_mol:
-                st.markdown(f"**{target}** ({target_mol['type']})")
-                st.code(target_mol['smiles'], language=None)
-
-            # For sameAs, highlight the matching SMILES
-            if rel_type == "sameAs" and source_mol and target_mol:
-                if source_mol['smiles'] == target_mol['smiles']:
-                    st.success("✓ SMILES match confirmed - these are the same molecule")
-
-            # Show data sources
-            if rel_type == "usedWith":
-                st.markdown("---")
-                st.markdown("**Data Sources:**")
-                st.markdown("- [CALiSol-23](https://doi.org/10.1038/s41597-024-03575-8)")
-                st.markdown("- [HI Münster Dataset](https://doi.org/10.1038/s41597-023-01936-3)")
-
-            elif rel_type == "coOccursWith":
-                st.markdown("---")
-                st.markdown("**Data Sources:**")
-                st.markdown("- Association rule mining on 6,134 formulations")
-                st.markdown("- Minimum support: 3 occurrences")
-                st.markdown("- Minimum confidence: 50%")
-
+        if node_relations:
+            for r in node_relations[:8]:
+                st.markdown(f"  {r}")
+            if len(node_relations) > 8:
+                st.caption(f"...and {len(node_relations) - 8} more")
+        else:
+            st.caption("No connections in current view")
     else:
-        st.info("No relationships visible with current filters")
+        st.info("Click a node in the graph to see its details")
+
+    # Relationship explainer in expander
+    with st.expander("🔍 Explain a Relationship"):
+        rel_options = []
+        for rel in relations:
+            if rel["source"] in visible_ids and rel["target"] in visible_ids:
+                source_mol = next((m for m in molecules if m["id"] == rel["source"]), None)
+                target_mol = next((m for m in molecules if m["id"] == rel["target"]), None)
+                source_name = source_mol["name"] if source_mol else rel["source"][:12]
+                target_name = target_mol["name"] if target_mol else rel["target"][:12]
+                label = f"{source_name} ↔ {target_name} ({rel['type']})"
+                rel_options.append((label, rel))
+
+        if rel_options:
+            selected_label = st.selectbox(
+                "Select relationship",
+                [r[0] for r in rel_options],
+                index=0
+            )
+
+            selected_rel = next((r[1] for r in rel_options if r[0] == selected_label), None)
+
+            if selected_rel:
+                rel_type = selected_rel["type"]
+                explanation = RELATION_EXPLANATIONS.get(rel_type, {})
+
+                if explanation:
+                    st.info(f"**Method:** {explanation.get('method', 'Unknown')}")
+                    st.markdown(explanation.get('description', ''))
+                    st.caption(f"**Basis:** {explanation.get('basis', 'N/A')}")
+        else:
+            st.caption("No relationships in current view")
 
 # Molecule details section
 st.divider()
