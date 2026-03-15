@@ -120,7 +120,8 @@ for mol in filtered_molecules:
         label=mol["id"],
         size=25,
         color=colors.get(mol["type"], "#888888"),
-        title=f"{mol['name']}\n{mol['smiles']}",
+        title=f"{mol['name']} | {mol['smiles']}",
+        symbolType="circle",
     ))
 
 visible_ids = {m["id"] for m in filtered_molecules}
@@ -148,8 +149,17 @@ config = Config(
     nodeHighlightBehavior=True,
     highlightColor="#F7A7A6",
     collapsible=False,
-    node={"labelProperty": "label"},
-    link={"labelProperty": "label", "renderLabel": True},
+    node={
+        "labelProperty": "label",
+        "renderLabel": True,
+    },
+    link={
+        "labelProperty": "label",
+        "renderLabel": True,
+    },
+    # Disable navigation on double-click
+    staticGraph=False,
+    staticGraphWithDragAndDrop=False,
 )
 
 # Main layout
@@ -157,9 +167,14 @@ col1, col2 = st.columns([3, 2])
 
 with col1:
     st.subheader("Graph Visualization")
+    st.caption("Click a node to select it. Use the dropdown on the right to explore relationships.")
 
     if nodes:
-        selected = agraph(nodes=nodes, edges=edges, config=config)
+        return_value = agraph(nodes=nodes, edges=edges, config=config)
+
+        # Handle node selection from graph click
+        if return_value:
+            st.session_state['selected_node'] = return_value
     else:
         st.info("No molecules match the current filters.")
 
@@ -254,7 +269,12 @@ with col1:
 
     mol_options = [m["id"] for m in filtered_molecules]
     if mol_options:
-        selected_mol = st.selectbox("Select molecule", mol_options, key="mol_select")
+        # Use clicked node if available
+        default_idx = 0
+        if 'selected_node' in st.session_state and st.session_state['selected_node'] in mol_options:
+            default_idx = mol_options.index(st.session_state['selected_node'])
+
+        selected_mol = st.selectbox("Select molecule", mol_options, index=default_idx, key="mol_select")
 
         if selected_mol:
             mol_data = next((m for m in molecules if m["id"] == selected_mol), None)
