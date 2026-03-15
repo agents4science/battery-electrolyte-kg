@@ -69,7 +69,7 @@ df = pd.DataFrame(comparison_data)
 
 # Main comparison table
 st.header("Property Comparison")
-st.dataframe(df, use_container_width=True, hide_index=True)
+st.dataframe(df, width='stretch', hide_index=True)
 
 # Tabs for different visualizations
 tab1, tab2, tab3 = st.tabs(["Bar Charts", "Radar Plot", "Conductivity"])
@@ -100,7 +100,7 @@ with tab1:
                 title="HOMO and LUMO Energies",
                 color_discrete_map={"HOMO (eV)": "#FF6B6B", "LUMO (eV)": "#4ECDC4"}
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
     with col2:
         if "Dielectric" in available_cols:
@@ -112,7 +112,7 @@ with tab1:
                 color="Dielectric",
                 color_continuous_scale="Viridis",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
     # HOMO-LUMO gap calculation
     if "HOMO (eV)" in df.columns and "LUMO (eV)" in df.columns:
@@ -128,7 +128,7 @@ with tab1:
                 color="Gap (eV)",
                 color_continuous_scale="Plasma",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 with tab2:
     st.subheader("Radar Plot Comparison")
@@ -172,7 +172,7 @@ with tab2:
             height=500,
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
         st.caption("Values normalized to 0-1 range for comparison")
     else:
         st.info("Not enough properties available for radar plot")
@@ -215,10 +215,10 @@ with tab3:
                 yaxis_title="Conductivity (S/cm)",
                 height=400,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
             # Data table
-            st.dataframe(df_cond, use_container_width=True, hide_index=True)
+            st.dataframe(df_cond, width='stretch', hide_index=True)
         else:
             st.info("Conductivity data not available for selected solvents")
 
@@ -250,7 +250,7 @@ with tab3:
             )
             fig.update_traces(textposition='top center', marker_size=12)
             fig.update_layout(height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
             st.info("""
             **Key Finding:** Higher LUMO energy correlates with higher conductivity (r=0.70).
@@ -265,4 +265,4 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 cond_path = PROJECT_ROOT / "data" / "output" / "figures" / "kg_solvent_conductivity.png"
 if cond_path.exists():
     st.subheader("Full Conductivity Analysis")
-    st.image(str(cond_path), use_container_width=True)
+    st.image(str(cond_path), width='stretch')

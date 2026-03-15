@@ -63,7 +63,7 @@ def main():
         "Type": [s["type"] for s in sources],
         "Properties": [s["properties"] for s in sources],
     }
-    st.dataframe(source_data, use_container_width=True, hide_index=True)
+    st.dataframe(source_data, width='stretch', hide_index=True)
 
     # Key Findings
     st.header("Key Discoveries")
@@ -114,7 +114,7 @@ def main():
     st.header("Knowledge Graph Overview")
     dashboard_path = PROJECT_ROOT / "data" / "output" / "figures" / "kg_dashboard.png"
     if dashboard_path.exists():
-        st.image(str(dashboard_path), use_container_width=True)
+        st.image(str(dashboard_path), width='stretch')
     else:
         st.info("Dashboard image not available")
 

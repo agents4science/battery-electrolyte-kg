@@ -93,13 +93,13 @@ with tab2:
             title="Property Correlations with Ionic Conductivity",
         )
         fig.update_layout(height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
         # Details table
         st.subheader("Correlation Details")
         st.dataframe(
             df_corr[["Property", "Correlation", "Confidence", "N Solvents", "Interpretation"]],
-            use_container_width=True,
+            width='stretch',
             hide_index=True
         )
 
@@ -115,7 +115,7 @@ with tab2:
     corr_path = PROJECT_ROOT / "data" / "output" / "figures" / "kg_cross_property.png"
     if corr_path.exists():
         st.subheader("Full Correlation Analysis")
-        st.image(str(corr_path), use_container_width=True)
+        st.image(str(corr_path), width='stretch')
 
 with tab3:
     st.header("Association Rule Mining")
@@ -146,7 +146,7 @@ with tab3:
                 color_discrete_sequence=px.colors.qualitative.Set2,
             )
             fig.update_layout(height=350)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
         # Top patterns
         st.subheader("Top Discovered Patterns")
