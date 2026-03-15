@@ -12,6 +12,21 @@ This project constructs a unified knowledge graph (KG) that links:
 
 The KG enables discovery of structure-property relationships that span multiple datasets, supporting data-driven electrolyte design.
 
+## Web Demo
+
+**Try the interactive demo:** [https://battery-electrolyte-kg.streamlit.app](https://battery-electrolyte-kg.streamlit.app)
+
+The web application provides:
+- **Knowledge Graph Explorer** - Interactive visualization with molecule search and filtering
+- **Hypothesis Dashboard** - Browse generated hypotheses and cross-property correlations
+- **Solvent Comparison Tool** - Compare electrochemical properties and conductivity across solvents
+
+To run locally:
+```bash
+pip install -r app/requirements.txt
+streamlit run app/streamlit_app.py
+```
+
 ![Knowledge Graph Dashboard](data/output/figures/kg_dashboard.png)
 
 ## Knowledge Graph Statistics
@@ -352,6 +367,15 @@ correlations = gen.compute_cross_property_correlations()
 
 ```
 KnowledgeGraph_Catalysis/
+├── app/                     # Streamlit web demo
+│   ├── streamlit_app.py     # Main dashboard
+│   ├── pages/
+│   │   ├── 1_Knowledge_Graph.py
+│   │   ├── 2_Hypotheses.py
+│   │   └── 3_Solvent_Compare.py
+│   ├── utils/
+│   │   └── data_loader.py
+│   └── requirements.txt
 ├── src/
 │   ├── schema/
 │   │   ├── entities.py      # Entity type definitions
