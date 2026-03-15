@@ -505,6 +505,81 @@ def get_measurements_for_molecule(molecule_id):
     return result
 
 
+def get_provenance_for_molecule(molecule_id):
+    """
+    Get provenance information for a molecule and its measurements.
+
+    Returns source datasets, DOIs, and row references.
+    """
+    kg = load_full_kg()
+    if not kg:
+        return []
+
+    provenance = kg.get("provenance", {})
+    sources = kg.get("sources", {})
+    rels = kg.get("relations", [])
+    measurements = kg.get("measurements", {})
+
+    result = []
+
+    # Get direct provenance for this molecule
+    for prov_id, prov in provenance.items():
+        if prov.get("entity_id") == molecule_id:
+            source_ids = prov.get("source_ids", [])
+            for src_id in source_ids:
+                src = sources.get(src_id, {})
+                result.append({
+                    "entity_type": prov.get("entity_type"),
+                    "source_name": src.get("name", "Unknown"),
+                    "source_doi": prov.get("source_doi") or src.get("doi"),
+                    "source_row": prov.get("source_row_id"),
+                    "extraction_method": prov.get("extraction_method"),
+                    "confidence": prov.get("confidence"),
+                })
+
+    # Also get provenance for measurements linked to this molecule
+    meas_ids = [r[2] for r in rels if r[1] == "hasMeasurement" and r[0] == molecule_id]
+    for meas_id in meas_ids[:5]:  # Limit to first 5
+        for prov_id, prov in provenance.items():
+            if prov.get("entity_id") == meas_id:
+                source_ids = prov.get("source_ids", [])
+                for src_id in source_ids:
+                    src = sources.get(src_id, {})
+                    meas = measurements.get(meas_id, {})
+                    result.append({
+                        "entity_type": f"Measurement ({meas.get('property_type', 'unknown')})",
+                        "source_name": src.get("name", "Unknown"),
+                        "source_doi": prov.get("source_doi") or src.get("doi"),
+                        "source_row": prov.get("source_row_id"),
+                        "extraction_method": prov.get("extraction_method"),
+                        "confidence": prov.get("confidence"),
+                    })
+                break
+
+    return result
+
+
+def get_source_datasets():
+    """Get all source datasets from the KG."""
+    kg = load_full_kg()
+    if not kg:
+        return []
+
+    sources = kg.get("sources", {})
+    return [
+        {
+            "id": src_id,
+            "name": src.get("name"),
+            "doi": src.get("doi"),
+            "url": src.get("url"),
+            "authors": src.get("authors", []),
+            "publication_date": src.get("publication_date"),
+            "license": src.get("license"),
+        }
+        for src_id, src in sources.items()
+    ]
+
+
 def get_relations_for_graph(molecule_ids=None):
     """
     Get relations for graph visualization.

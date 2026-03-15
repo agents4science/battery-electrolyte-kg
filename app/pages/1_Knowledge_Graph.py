@@ -18,6 +18,7 @@ from utils.data_loader import (
     get_relations_for_graph,
     get_relations_for_molecule,
     get_measurements_for_molecule,
+    get_provenance_for_molecule,
     load_curated_properties,
     COMPOUND_NAMES,
     COMPOUND_SMILES,
@@ -398,5 +399,45 @@ with col2:
                 st.caption(f"Total: {len(all_mol_relations)} connections")
             else:
                 st.caption("No connections found in knowledge graph")
+
+            # Show provenance information
+            st.markdown("---")
+            st.markdown("**Data Sources:**")
+
+            provenance = get_provenance_for_molecule(selected_mol_id)
+            if provenance:
+                # Group by source
+                by_source = {}
+                for p in provenance:
+                    src_name = p["source_name"]
+                    if src_name not in by_source:
+                        by_source[src_name] = {
+                            "doi": p["source_doi"],
+                            "rows": [],
+                            "types": set(),
+                        }
+                    if p["source_row"]:
+                        by_source[src_name]["rows"].append(p["source_row"])
+                    by_source[src_name]["types"].add(p["entity_type"])
+
+                for src_name, info in by_source.items():
+                    doi = info["doi"]
+                    rows = info["rows"]
+                    types = ", ".join(info["types"])
+
+                    if doi:
+                        st.markdown(f"**[{src_name}](https://doi.org/{doi})**")
+                    else:
+                        st.markdown(f"**{src_name}**")
+
+                    if rows:
+                        row_str = ", ".join(rows[:5])
+                        if len(rows) > 5:
+                            row_str += f" (+{len(rows)-5} more)"
+                        st.caption(f"Rows: {row_str} | Data: {types}")
+                    else:
+                        st.caption(f"Data: {types}")
+            else:
+                st.caption("No provenance information available")
     else:
         st.info("No molecules to display with current filters")
