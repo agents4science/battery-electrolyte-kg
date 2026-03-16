@@ -26,9 +26,9 @@
         "electron_affinity": {
           "value": 1.06,
           "unit": "eV",
-          "conditions": "vacuum",
+          "conditions": "vacuum, B3LYP/6-31++G**",
           "method": "DFT",
-          "reference": "PMC9779264"
+          "reference": "Eilmes et al. 2022, Int. J. Mol. Sci. 23, 15590, DOI:10.3390/ijms232415590"
         },
         "homo_energy": {
           "value": -8.4,
@@ -39,9 +39,9 @@
         "lumo_energy": {
           "value": -0.38,
           "unit": "eV",
-          "conditions": "vacuum",
+          "conditions": "vacuum, B3LYP/6-31++G**",
           "method": "DFT",
-          "reference": "PMC9779264"
+          "reference": "Eilmes et al. 2022, Int. J. Mol. Sci. 23, 15590, DOI:10.3390/ijms232415590"
         },
         "dielectric_constant": {
           "value": 89.78,
@@ -53,14 +53,14 @@
         "oxidation_potential": {
           "value": 6.2,
           "unit": "V vs Li/Li+",
-          "method": "DFT-PCM",
-          "reference": "Literature"
+          "method": "DFT M05-2X, EC with BF4- anion",
+          "reference": "Xing et al. 2012, Phys. Chem. Chem. Phys., DOI:10.1039/c2cp41103b"
         },
         "reduction_potential": {
           "value": 0.8,
           "unit": "V vs Li/Li+",
-          "method": "DFT-PCM",
-          "reference": "Literature"
+          "notes": "Onset of EC reduction on graphite anode",
+          "reference": "Xing et al. 2012, Phys. Chem. Chem. Phys., DOI:10.1039/c2cp41103b"
         }
       }
     },
@@ -519,8 +519,8 @@
         "thermal_stability": {
           "value": 107,
           "unit": "C",
-          "notes": "Decomposition onset temperature in EC/DMC",
-          "reference": "Literature"
+          "notes": "Decomposition onset in dry inert atmosphere (<10 ppm H2O)",
+          "reference": "Yang et al. 2006, J. Power Sources 162, 1346, DOI:10.1016/j.jpowsour.2006.03.058"
         },
         "oxidation_stability": {
           "value": 5.0,
@@ -617,9 +617,11 @@
           "notes": "Na+ ionic radius (6-coordinate), larger than Li+ (0.76 A)",
           "reference": "Shannon 1976, Acta Cryst. A32, 751, DOI:10.1107/S0567739476001551"
         },
-        "notes": {
-          "conductivity_source": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B",
-          "description": "Benchmarked as one of the best-performing sodium salts in EC:PC mixtures"
+        "conductivity": {
+          "value": 7.98,
+          "unit": "mS/cm",
+          "conditions": "1M in PC, 25C",
+          "reference": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B"
         }
       }
     },
@@ -634,9 +636,11 @@
       "anion": "ClO4-",
       "battery_type": "sodium-ion",
       "properties": {
-        "notes": {
-          "conductivity_source": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B",
-          "description": "Tested alongside NaPF6 in EC:PC mixtures"
+        "conductivity": {
+          "value": 6.35,
+          "unit": "mS/cm",
+          "conditions": "1M in PC, 25C",
+          "reference": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B"
         }
       }
     },
@@ -651,8 +655,17 @@
       "anion": "TFSI-",
       "battery_type": "sodium-ion",
       "properties": {
-        "notes": {
-          "description": "Sodium analog of LiTFSI with similar anion properties; good thermal stability, some Al corrosion concerns above 4V"
+        "conductivity": {
+          "value": 6.2,
+          "unit": "mS/cm",
+          "conditions": "1M in PC, 25C",
+          "reference": "Ponrouch et al. 2012, Energy Environ. Sci. 5, 8572, DOI:10.1039/C2EE22258B"
+        },
+        "oxidation_stability": {
+          "value": 3.7,
+          "unit": "V vs Na/Na+",
+          "notes": "Al corrosion onset potential",
+          "reference": "Eshetu et al. 2020, Adv. Energy Mater. 10, 2000093, DOI:10.1002/aenm.202000093"
         }
       }
     },

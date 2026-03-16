@@ -50,7 +50,11 @@
       "Bash(timeout 15 python3:*)",
       "Bash(ls:*)",
       "Bash(timeout 15 streamlit run:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:pubmed.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.sciencedirect.com)",
+      "WebFetch(domain:escholarship.org)"
     ]
   }
 }
