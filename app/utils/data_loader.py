@@ -193,10 +193,11 @@ def get_data_sources():
     ]
 
 
-def _infer_molecule_type(name, smiles=""):
+def _infer_molecule_type(name, smiles=None):
     """Infer molecule type from name and SMILES."""
     name_lower = name.lower()
-    smiles_lower = smiles.lower() if smiles else ""
+    smiles = smiles or ""  # Handle None
+    smiles_lower = smiles.lower()
 
     # Check for salts (Li/Na compounds)
     salt_indicators = ["lithium", "sodium", "lipf6", "libf4", "litfsi", "lifsi",
