@@ -33,17 +33,27 @@ streamlit run app/streamlit_app.py
 
 | Metric | Count |
 |--------|-------|
-| Total Molecules | 23,421 |
-| Electrolyte Formulations | 6,134 |
-| Property Measurements | 57,370 |
-| Relations | 116,568 |
+| Total Molecules | 101,318 |
+| Electrolyte Formulations | 10,252 |
+| Property Measurements | 320,031 |
+| Relations | 390,147 |
+| Provenance Records | 431,736 |
 | Interphase Species | 200 |
+
+### Measurements by Property Type
+
+| Property | Experimental | ML-Predicted | Total |
+|----------|--------------|--------------|-------|
+| Ionic Conductivity | 32,620 | 76,608 | 109,228 |
+| Ionization Energy | 38,716 | 76,608 | 115,324 |
+| Electron Affinity | 18,683 | - | 18,683 |
+| Coulombic Efficiency | 142 | 76,608 | 76,750 |
 
 ---
 
 ## Data Sources
 
-The knowledge graph integrates five primary data sources, each contributing unique property types and molecular coverage.
+The knowledge graph integrates eight data sources, each contributing unique property types and molecular coverage.
 
 ![Data Sources Volume](data/output/figures/kg_data_sources.png)
 
@@ -137,6 +147,59 @@ The knowledge graph integrates five primary data sources, each contributing uniq
 - Organic decomposition products (alkyl carbonates)
 - Radical intermediates
 - Polymeric species
+
+### 6. ChemDataExtractor Battery Database v2
+
+| Property | Value |
+|----------|-------|
+| **Conductivity Measurements** | 4,366 |
+| **Paper Sources** | 1,857 unique DOIs |
+| **DOI** | [10.6084/m9.figshare.18154715](https://doi.org/10.6084/m9.figshare.18154715) |
+| **Paper** | [10.1038/s41597-020-00602-2](https://doi.org/10.1038/s41597-020-00602-2) |
+
+**Description**: Auto-extracted battery materials data from scientific literature using ChemDataExtractor NLP. Every measurement is linked to its source paper DOI, enabling full provenance tracing.
+
+**Key Features**:
+- NLP-extracted conductivity values from 1,857 papers
+- Includes solid electrolytes (LGPS, LLZO, NASICON-type)
+- Each measurement has DOI-backed provenance
+- Confidence: 0.8 (NLP-extracted)
+
+### 7. Electrolytomics Dataset
+
+| Property | Value |
+|----------|-------|
+| **Conductivity Measurements** | 10,196 |
+| **Ionization Energy (DFT)** | 18,133 |
+| **Coulombic Efficiency** | 142 |
+| **Formulations** | 4,118 |
+| **DOI** | [10.1021/acs.chemmater.4c03196](https://doi.org/10.1021/acs.chemmater.4c03196) |
+| **Source** | Chemistry of Materials (2025) |
+
+**Description**: Comprehensive electrolyte property database from Amanchukwu Lab. Provides full formulation data (multiple solvents + salt + concentration) with measured conductivity, plus DFT-computed ionization energies.
+
+**Properties**:
+- Ionic conductivity at various temperatures
+- Ionization energy (Materials Project DFT)
+- Coulombic efficiency
+
+### 8. ML-Predicted Properties (Virtual Screening)
+
+| Property | Value |
+|----------|-------|
+| **Candidate Molecules** | 76,608 |
+| **Predicted Conductivity** | 76,608 |
+| **Predicted IE** | 76,608 |
+| **Predicted CE** | 76,608 |
+| **DOI** | [10.1021/acs.chemmater.4c03196](https://doi.org/10.1021/acs.chemmater.4c03196) |
+
+**Description**: Machine learning predictions for commercial molecules from eMolecules database. Enables virtual screening of new electrolyte candidates. All predictions use LiFSI as the salt.
+
+**Models**: Chemprop + LightGBM ensemble trained on experimental data
+
+**Confidence**: 0.6 (ML predictions distinguished from experimental data)
+
+**Use Case**: Identify promising candidate molecules for experimental validation
 
 ---
 
@@ -396,7 +459,10 @@ KnowledgeGraph_Catalysis/
 │   │   ├── calisol.py       # CALiSol-23 ingestor
 │   │   ├── electrolyte_genome.py  # Materials Project ingestor
 │   │   ├── curated_properties.py  # Curated properties ingestor
-│   │   └── libe.py          # LIBE ingestor
+│   │   ├── libe.py          # LIBE ingestor
+│   │   ├── chemdataextractor.py   # ChemDataExtractor ingestor
+│   │   ├── electrolytomics.py     # Electrolytomics ingestor
+│   │   └── ml_predictions.py      # ML predictions ingestor
 │   ├── kg_store/
 │   │   └── graph.py         # KnowledgeGraph class
 │   ├── hypothesis/
@@ -409,7 +475,7 @@ KnowledgeGraph_Catalysis/
 │   │   ├── solvent_electrochemical_properties.json
 │   │   └── ...
 │   └── output/
-│       ├── knowledge_graph_v3.json
+│       ├── knowledge_graph_v7.json.gz  # Current KG version
 │       ├── cross_property_hypotheses.json
 │       └── figures/
 │           ├── kg_dashboard.png
@@ -427,11 +493,15 @@ KnowledgeGraph_Catalysis/
 
 1. de Blasio, P. et al. "CALiSol-23: Conductivity Atlas for Lithium salts and Solvents." *Nature Scientific Data* (2024). DOI: [10.1038/s41597-024-03575-8](https://doi.org/10.1038/s41597-024-03575-8)
 
-2. Qu, X. et al. "The Electrolyte Genome project: A big data approach in battery materials discovery." *Computational Materials Science* 103, 56-67 (2015).
+2. Kumar, R. et al. "Electrolytomics: A unified big data approach for electrolyte design and discovery." *Chemistry of Materials* 37, 2720-2734 (2025). DOI: [10.1021/acs.chemmater.4c03196](https://doi.org/10.1021/acs.chemmater.4c03196)
 
-3. Borodin, O. "Molecular Modeling of Electrolytes." *Handbook of Battery Materials* (2011).
+3. Huang, S. & Cole, J.M. "A database of battery materials auto-generated using ChemDataExtractor." *Scientific Data* 7, 260 (2020). DOI: [10.1038/s41597-020-00602-2](https://doi.org/10.1038/s41597-020-00602-2)
 
-4. Xu, K. "Nonaqueous Liquid Electrolytes for Lithium-Based Rechargeable Batteries." *Chemical Reviews* 104, 4303-4417 (2004).
+4. Qu, X. et al. "The Electrolyte Genome project: A big data approach in battery materials discovery." *Computational Materials Science* 103, 56-67 (2015).
+
+5. Borodin, O. "Molecular Modeling of Electrolytes." *Handbook of Battery Materials* (2011).
+
+6. Xu, K. "Nonaqueous Liquid Electrolytes for Lithium-Based Rechargeable Batteries." *Chemical Reviews* 104, 4303-4417 (2004).
 
 ---
 
@@ -440,6 +510,8 @@ KnowledgeGraph_Catalysis/
 This project is for research purposes. Individual datasets retain their original licenses:
 - CALiSol-23: CC BY 4.0
 - Materials Project: CC BY 4.0
+- ChemDataExtractor: CC BY 4.0
+- Electrolytomics: MIT
 - Curated Properties: CC BY 4.0
 
 ---
