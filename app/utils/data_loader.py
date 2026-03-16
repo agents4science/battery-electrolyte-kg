@@ -205,7 +205,7 @@ def _infer_molecule_type(name, smiles=""):
         return "salt"
     if name.startswith(("Li", "Na")) and any(c.isupper() for c in name[2:4]):
         return "salt"
-    if "[Li" in smiles or "[Na" in smiles:
+    if smiles and ("[Li" in smiles or "[Na" in smiles):
         return "salt"
 
     # Check for common solvents
@@ -231,7 +231,7 @@ def get_all_molecules_from_kg():
     # Add molecules with inferred types
     for mol_id, mol in kg.get("molecules", {}).items():
         name = mol.get("name", mol_id[:12])
-        smiles = mol.get("smiles", "")
+        smiles = mol.get("smiles") or ""
         mol_type = _infer_molecule_type(name, smiles)
         molecules.append({
             "id": mol_id,
