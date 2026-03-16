@@ -339,8 +339,16 @@ def fig_linkages(kg, output_dir):
         ('LIBE', 11, 4, 761, '#34495e'),
     ]
 
+    # Use log scale for circle sizes to prevent large datasets from dominating
+    # Map counts to reasonable circle sizes (0.4 to 1.2)
+    counts = [d[3] for d in datasets]
+    log_counts = [np.log10(c + 1) for c in counts]
+    min_log, max_log = min(log_counts), max(log_counts)
+
     for name, x, y, count, color in datasets:
-        size = np.sqrt(count) / 10 + 0.8
+        # Scale log count to size range [0.4, 1.2]
+        log_c = np.log10(count + 1)
+        size = 0.4 + 0.8 * (log_c - min_log) / (max_log - min_log) if max_log > min_log else 0.8
         circle = plt.Circle((x, y), size, color=color, alpha=0.8)
         ax.add_patch(circle)
         ax.text(x, y + 0.1, name, ha='center', va='center', fontsize=9, fontweight='bold')
