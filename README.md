@@ -446,16 +446,24 @@ KnowledgeGraph_Catalysis/
 │   │   ├── 1_Knowledge_Graph.py
 │   │   ├── 2_Hypotheses.py
 │   │   ├── 3_Solvent_Compare.py
-│   │   └── 4_Provenance.py
+│   │   ├── 4_Provenance.py
+│   │   └── 5_Discovery.py    # Discovery pipeline dashboard
 │   ├── utils/
 │   │   └── data_loader.py
 │   └── requirements.txt
 ├── scripts/
 │   ├── generate_figures.py  # Generate KG visualizations
+│   ├── run_discovery.py     # Run multi-agent discovery pipeline
 │   ├── integrate_chemdataextractor.py
 │   ├── integrate_electrolytomics.py
 │   └── integrate_ml_predictions.py
 ├── src/
+│   ├── agents/              # Multi-agent discovery system
+│   │   ├── explorer.py      # Gap detection agent
+│   │   ├── hypothesis.py    # Hypothesis generation agent
+│   │   ├── evaluator.py     # Hypothesis validation agent
+│   │   ├── curator.py       # Human-in-the-loop curation
+│   │   └── orchestrator.py  # Discovery pipeline coordinator
 │   ├── schema/
 │   │   ├── entities.py      # Entity type definitions
 │   │   └── relations.py     # Relation type definitions
@@ -491,6 +499,72 @@ KnowledgeGraph_Catalysis/
 │           ├── kg_decomposition_pathways.png
 │           └── kg_solvent_conductivity.png
 └── README.md
+```
+
+---
+
+## Multi-Agent Discovery Pipeline
+
+The project implements an agentic AI system for automated hypothesis generation and validation, following the architecture outlined in the [Practical Pilot Plan](Practical%20Pilot%20Plan%20for%20Agentic%20AI–Driven%20Knowledge-Graph%20Discovery%20in%20Battery%20Electrolyte%20Design.docx).
+
+### Agent Architecture
+
+| Agent | Purpose | Methods |
+|-------|---------|---------|
+| **Explorer** | Find gaps and hypothesis candidates | Coverage analysis, missing link detection, property completeness |
+| **Hypothesis** | Propose KG augmentations | Association rule mining, correlation analysis, causal inference |
+| **Evaluator** | Validate hypotheses | Plausibility checks, consistency tests, statistical validation |
+| **Curator** | Human-in-the-loop integration | Approve/reject with rationale, merge into KG with provenance |
+
+### Discovery Funnel
+
+```
+Gaps Found → Hypothesis Candidates → Generated Hypotheses → Validated → Curated → Merged
+```
+
+### Running the Discovery Pipeline
+
+```bash
+# Full discovery run
+python scripts/run_discovery.py
+
+# Quick mode (fewer analyses)
+python scripts/run_discovery.py --quick
+
+# Custom settings
+python scripts/run_discovery.py --max-hypotheses 100 --min-confidence 0.7
+```
+
+### Example Output
+
+```
+DISCOVERY FUNNEL
+----------------------------------------
+  Gaps found:                8
+  Hypotheses generated:     77
+  Validated:                63
+  Ready for curation:       77
+
+VALIDATED HYPOTHESES
+----------------------------------------
+  1. Diethyl carbonate --[coOccursWith]--> Lithium tetrafluoroborate
+  2. LiPF6 --[coOccursWith]--> Ethylene carbonate
+  3. EMC --[coOccursWith]--> Ethylene carbonate
+```
+
+### Programmatic Usage
+
+```python
+from src.agents import DiscoveryOrchestrator
+
+# Run discovery
+orchestrator = DiscoveryOrchestrator("data/output/knowledge_graph_v7.json.gz")
+run = orchestrator.run_discovery_loop()
+
+# View results
+print(f"Validated: {len(run.validated_hypotheses)}")
+for hyp in run.validated_hypotheses[:5]:
+    print(f"  {hyp['subject']['name']} --[{hyp['hypothesis_type']}]--> {hyp['object']['name']}")
 ```
 
 ---
