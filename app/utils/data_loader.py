@@ -337,13 +337,15 @@ def get_molecules_for_graph(search_query="", entity_types=None, max_nodes=50):
         def matches_query(m):
             if query_lower in m["name"].lower():
                 return True
-            if query_lower in m.get("smiles", "").lower():
+            smiles = m.get("smiles") or ""
+            if query_lower in smiles.lower():
                 return True
-            if query_lower in m.get("type", "").lower():
+            mol_type = m.get("type") or ""
+            if query_lower in mol_type.lower():
                 return True
             # Also search synonyms
             for syn in m.get("synonyms") or []:
-                if query_lower in syn.lower():
+                if syn and query_lower in syn.lower():
                     return True
             return False
 
