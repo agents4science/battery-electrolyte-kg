@@ -445,10 +445,16 @@ KnowledgeGraph_Catalysis/
 │   ├── pages/
 │   │   ├── 1_Knowledge_Graph.py
 │   │   ├── 2_Hypotheses.py
-│   │   └── 3_Solvent_Compare.py
+│   │   ├── 3_Solvent_Compare.py
+│   │   └── 4_Provenance.py
 │   ├── utils/
 │   │   └── data_loader.py
 │   └── requirements.txt
+├── scripts/
+│   ├── generate_figures.py  # Generate KG visualizations
+│   ├── integrate_chemdataextractor.py
+│   ├── integrate_electrolytomics.py
+│   └── integrate_ml_predictions.py
 ├── src/
 │   ├── schema/
 │   │   ├── entities.py      # Entity type definitions
