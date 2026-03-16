@@ -49,7 +49,8 @@
       "Bash(timeout 10 python3:*)",
       "Bash(timeout 15 python3:*)",
       "Bash(ls:*)",
-      "Bash(timeout 15 streamlit run:*)"
+      "Bash(timeout 15 streamlit run:*)",
+      "Bash(find:*)"
     ]
   }
 }

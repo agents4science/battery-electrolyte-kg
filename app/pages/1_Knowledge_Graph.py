@@ -527,6 +527,7 @@ with col2:
 
             # Show curated property references
             CURATED_FILE_URL = "https://github.com/agents4science/battery-electrolyte-kg/blob/main/data/raw/solvent_electrochemical_properties.json"
+            RESEARCH_REPORT_URL = "https://github.com/agents4science/battery-electrolyte-kg/blob/main/deep-research-report.md"
             if curated_refs:
                 has_any_provenance = True
                 st.markdown("**Curated Properties (Literature):**")
@@ -543,9 +544,9 @@ with col2:
                     if re.search(r'PMC\d+', ref):
                         # Convert PMC IDs to links
                         ref = re.sub(r'(PMC\d+)', r'[\1](https://www.ncbi.nlm.nih.gov/pmc/articles/\1/)', ref)
-                    # For vague references, link to the curated file with caveat
+                    # For vague references, show provenance chain with caveat
                     if ref.lower() in ["literature", "literature compilation"]:
-                        ref = f"[Curated file]({CURATED_FILE_URL}) *(citation needed)*"
+                        ref = f"via [AI research report]({RESEARCH_REPORT_URL}) → [curated file]({CURATED_FILE_URL}) *(original citation needed)*"
                     elif ref == "CRC Handbook":
                         ref = "[CRC Handbook of Chemistry and Physics](https://hbcp.chemnetbase.com/)"
                     elif ref == "NIST WebBook":
