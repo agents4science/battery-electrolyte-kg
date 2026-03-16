@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import networkx as nx
 from pathlib import Path
 import sys
+import re
 
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -467,7 +468,19 @@ with col2:
                 has_any_provenance = True
                 st.markdown("**Curated Properties (Literature):**")
                 for ref_info in curated_refs:
-                    st.caption(f"- {ref_info['property']}: {ref_info['reference']}")
+                    ref = ref_info['reference']
+                    prop = ref_info['property']
+                    # Convert DOIs and PMC IDs to hyperlinks
+                    if "DOI:" in ref:
+                        # Extract DOI and make it a link
+                        doi_match = re.search(r'DOI:(10\.\S+)', ref)
+                        if doi_match:
+                            doi = doi_match.group(1)
+                            ref = re.sub(r'DOI:10\.\S+', f'[DOI:{doi}](https://doi.org/{doi})', ref)
+                    if re.search(r'PMC\d+', ref):
+                        # Convert PMC IDs to links
+                        ref = re.sub(r'(PMC\d+)', r'[\1](https://www.ncbi.nlm.nih.gov/pmc/articles/\1/)', ref)
+                    st.caption(f"- {prop}: {ref}")
 
             if not has_any_provenance:
                 st.caption("No provenance information available")
