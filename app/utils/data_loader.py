@@ -14,13 +14,13 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 def load_full_kg():
     """Load the full knowledge graph (supports gzipped files)."""
     # Try gzipped version first (for deployment)
-    kg_path_gz = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v6.json.gz"
+    kg_path_gz = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v7.json.gz"
     if kg_path_gz.exists():
         with gzip.open(kg_path_gz, 'rt', encoding='utf-8') as f:
             return json.load(f)
 
     # Fall back to uncompressed (for local dev)
-    kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v6.json"
+    kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v7.json"
     if kg_path.exists():
         with open(kg_path) as f:
             return json.load(f)
