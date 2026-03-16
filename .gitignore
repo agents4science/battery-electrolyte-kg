@@ -28,3 +28,6 @@ data/output/hypotheses*.json
 
 # But include gzipped versions (small enough for GitHub)
 !data/output/*.json.gz
+
+# External downloaded datasets (too large for git)
+data/external/

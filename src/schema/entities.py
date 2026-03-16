@@ -55,6 +55,8 @@ class PropertyType(str, Enum):
     THERMAL_STABILITY = "thermal_stability"  # C (decomposition temp)
     LATTICE_ENERGY = "lattice_energy"  # kJ/mol
     OXIDATION_STABILITY = "oxidation_stability"  # V vs Li/Li+
+    # Battery performance metrics
+    COULOMBIC_EFFICIENCY = "coulombic_efficiency"  # dimensionless (0-1)
 
     @property
     def entity_id(self) -> str:
@@ -93,6 +95,7 @@ class PropertyTypeEntity(BaseModel):
             PropertyType.THERMAL_STABILITY: "Thermal decomposition temperature",
             PropertyType.LATTICE_ENERGY: "Energy to separate salt into ions",
             PropertyType.OXIDATION_STABILITY: "Voltage at which oxidation begins",
+            PropertyType.COULOMBIC_EFFICIENCY: "Ratio of discharge to charge capacity",
         }
         units = {
             PropertyType.IONIC_CONDUCTIVITY: "S/cm",
@@ -115,6 +118,7 @@ class PropertyTypeEntity(BaseModel):
             PropertyType.THERMAL_STABILITY: "C",
             PropertyType.LATTICE_ENERGY: "kJ/mol",
             PropertyType.OXIDATION_STABILITY: "V",
+            PropertyType.COULOMBIC_EFFICIENCY: "dimensionless",
         }
         return cls(
             id=prop_type.entity_id,

@@ -20,7 +20,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 @st.cache_data
 def load_kg_data():
     """Load the knowledge graph JSON."""
-    kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v4.json"
+    kg_path = PROJECT_ROOT / "data" / "output" / "knowledge_graph_v6.json"
     if kg_path.exists():
         with open(kg_path) as f:
             return json.load(f)
@@ -30,7 +30,7 @@ def load_kg_data():
 kg = load_kg_data()
 
 if kg is None:
-    st.error("Knowledge graph data not found. Please ensure knowledge_graph_v4.json exists.")
+    st.error("Knowledge graph data not found. Please ensure knowledge_graph_v6.json exists.")
     st.stop()
 
 # Get data
