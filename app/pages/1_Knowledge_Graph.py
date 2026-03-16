@@ -20,6 +20,7 @@ from utils.data_loader import (
     get_relations_for_molecule,
     get_measurements_for_molecule,
     get_provenance_for_molecule,
+    get_all_molecules_from_kg,
     load_curated_properties,
     COMPOUND_NAMES,
     COMPOUND_SMILES,
@@ -28,6 +29,12 @@ from utils.data_loader import (
 st.set_page_config(page_title="KG Explorer", page_icon="🔗", layout="wide")
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+# Initialize session state
+if 'selected_mol_id' not in st.session_state:
+    st.session_state.selected_mol_id = None
+if 'focus_mode' not in st.session_state:
+    st.session_state.focus_mode = False
 
 
 # Relation explanations
@@ -112,8 +119,6 @@ molecule_ids = {m["id"] for m in molecules}
 
 # If searching and show_neighbors is enabled, expand to include connected molecules
 if search_query and show_neighbors and len(molecules) > 0:
-    from utils.data_loader import get_relations_for_molecule, get_all_molecules_from_kg, COMPOUND_NAMES, COMPOUND_SMILES
-
     # Get neighbors for each searched molecule
     neighbor_ids = set()
     for mol in molecules:
@@ -146,6 +151,36 @@ if search_query and show_neighbors and len(molecules) > 0:
                 existing_ids.add(nid)
 
     molecule_ids = {m["id"] for m in molecules}
+
+# Handle focus mode - show only selected node and its neighbors
+if st.session_state.focus_mode and st.session_state.selected_mol_id:
+    focus_id = st.session_state.selected_mol_id
+    focus_mol = next((m for m in molecules if m["id"] == focus_id), None)
+
+    if focus_mol:
+        # Get neighbors of the focused molecule
+        focus_relations = get_relations_for_molecule(focus_id, focus_mol.get("name"))
+        neighbor_ids = {rel["other_id"] for rel in focus_relations}
+
+        # Load neighbor data
+        all_mols = get_all_molecules_from_kg()
+        mol_by_id = {m["id"]: m for m in all_mols}
+        for abbrev, smiles in COMPOUND_SMILES.items():
+            if abbrev not in mol_by_id:
+                mol_by_id[abbrev] = {
+                    "id": abbrev,
+                    "name": COMPOUND_NAMES.get(abbrev, abbrev),
+                    "smiles": smiles,
+                    "type": "salt" if abbrev.startswith(("Li", "Na")) else "solvent"
+                }
+
+        # Build focused molecule list
+        molecules = [focus_mol]
+        for nid in neighbor_ids:
+            if nid in mol_by_id:
+                molecules.append(mol_by_id[nid])
+
+        molecule_ids = {m["id"] for m in molecules}
 
 relations = get_relations_for_graph(molecule_ids=molecule_ids)
 filtered_molecules = molecules
@@ -231,7 +266,12 @@ node_x = []
 node_y = []
 node_text = []
 node_colors = []
+node_sizes = []
+node_borders = []
 node_ids = []
+
+# Get the currently selected molecule for highlighting
+highlight_id = st.session_state.selected_mol_id
 
 for node in G.nodes():
     x, y = pos[node]
@@ -242,6 +282,14 @@ for node in G.nodes():
     node_colors.append(colors.get(node_type, "#888888"))
     node_ids.append(node)
 
+    # Highlight selected node
+    if node == highlight_id:
+        node_sizes.append(35)  # Larger
+        node_borders.append("#FFD700")  # Gold border
+    else:
+        node_sizes.append(25)
+        node_borders.append("white")
+
 node_trace = go.Scatter(
     x=node_x, y=node_y,
     mode='markers+text',
@@ -251,9 +299,9 @@ node_trace = go.Scatter(
     textposition="top center",
     textfont=dict(size=10),
     marker=dict(
-        size=25,
+        size=node_sizes,
         color=node_colors,
-        line=dict(width=2, color='white')
+        line=dict(width=[4 if b == "#FFD700" else 2 for b in node_borders], color=node_borders)
     ),
     customdata=[f"node:{nid}" for nid in node_ids],
 )
@@ -298,11 +346,10 @@ with col2:
     mol_id_to_name = {m[0]: m[1] for m in mol_options}
 
     if mol_ids:
-        # Get default from session state (graph click) or use first
-        selected_node_id = st.session_state.get('selected_node')
+        # Get default from session state or use first
         default_idx = 0
-        if selected_node_id and selected_node_id in mol_ids:
-            default_idx = mol_ids.index(selected_node_id)
+        if st.session_state.selected_mol_id and st.session_state.selected_mol_id in mol_ids:
+            default_idx = mol_ids.index(st.session_state.selected_mol_id)
 
         selected_mol_id = st.selectbox(
             "Select molecule",
@@ -311,6 +358,21 @@ with col2:
             format_func=lambda x: mol_id_to_name.get(x, x),
             key="mol_select"
         )
+
+        # Update session state when selection changes
+        st.session_state.selected_mol_id = selected_mol_id
+
+        # Focus/Clear buttons
+        btn_col1, btn_col2 = st.columns(2)
+        with btn_col1:
+            if st.button("🎯 Focus on node", help="Redraw graph showing only this node and its connections"):
+                st.session_state.focus_mode = True
+                st.rerun()
+        with btn_col2:
+            if st.session_state.focus_mode:
+                if st.button("↩️ Clear focus", help="Return to filtered view"):
+                    st.session_state.focus_mode = False
+                    st.rerun()
 
         selected_mol_data = next((m for m in molecules if m["id"] == selected_mol_id), None)
 
