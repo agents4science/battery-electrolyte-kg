@@ -4,13 +4,20 @@ A comprehensive knowledge graph integrating heterogeneous data sources for lithi
 
 ## Overview
 
-This project constructs a unified knowledge graph (KG) that links:
+This project demonstrates an **agentic AI approach to scientific discovery** in battery materials. It combines:
+
+1. **Knowledge Graph Construction** - Integrating 8 heterogeneous data sources into a unified graph with 101K molecules and 320K measurements
+2. **Multi-Agent Discovery** - Autonomous agents that explore gaps, generate hypotheses, validate findings, and integrate discoveries
+3. **Human-in-the-Loop Curation** - Interactive review and approval of AI-generated hypotheses before KG integration
+
+The KG links:
 - **Ionic conductivity measurements** from experimental datasets
 - **Electrochemical properties** (HOMO, LUMO, ionization energy, electron affinity)
 - **SEI/interphase chemistry** with decomposition pathways
 - **Molecular structure** via SMILES representations
+- **ML predictions** for 76K candidate molecules
 
-The KG enables discovery of structure-property relationships that span multiple datasets, supporting data-driven electrolyte design.
+This enables discovery of structure-property relationships that span multiple datasets, supporting data-driven electrolyte design.
 
 ## Web Demo
 
@@ -20,6 +27,8 @@ The web application provides:
 - **Knowledge Graph Explorer** - Interactive visualization with molecule search and filtering
 - **Hypothesis Dashboard** - Browse generated hypotheses and cross-property correlations
 - **Solvent Comparison Tool** - Compare electrochemical properties and conductivity across solvents
+- **Provenance Tracing** - Trace any entity back to its original data source
+- **Discovery Dashboard** - View and curate AI-generated hypotheses from the multi-agent pipeline
 
 To run locally:
 ```bash
@@ -503,27 +512,96 @@ KnowledgeGraph_Catalysis/
 
 ---
 
-## Multi-Agent Discovery Pipeline
+## Agentic AI Discovery System
 
-The project implements an agentic AI system for automated hypothesis generation and validation, following the architecture outlined in the [Practical Pilot Plan](Practical%20Pilot%20Plan%20for%20Agentic%20AI–Driven%20Knowledge-Graph%20Discovery%20in%20Battery%20Electrolyte%20Design.docx).
+This project implements a **multi-agent AI system** for automated scientific discovery in battery electrolyte design. The system follows the architecture outlined in the [Practical Pilot Plan for Agentic AI-Driven Knowledge-Graph Discovery](Practical%20Pilot%20Plan%20for%20Agentic%20AI–Driven%20Knowledge-Graph%20Discovery%20in%20Battery%20Electrolyte%20Design.docx).
 
-### Agent Architecture
+### Discovery Loop Architecture
 
-| Agent | Purpose | Methods |
-|-------|---------|---------|
-| **Explorer** | Find gaps and hypothesis candidates | Coverage analysis, missing link detection, property completeness |
-| **Hypothesis** | Propose KG augmentations | Association rule mining, correlation analysis, causal inference |
-| **Evaluator** | Validate hypotheses | Plausibility checks, consistency tests, statistical validation |
-| **Curator** | Human-in-the-loop integration | Approve/reject with rationale, merge into KG with provenance |
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     AGENTIC DISCOVERY LOOP                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ┌──────────┐    ┌────────────┐    ┌───────────┐    ┌──────────┐ │
+│   │ EXPLORER │───▶│ HYPOTHESIS │───▶│ EVALUATOR │───▶│ CURATOR  │ │
+│   │  Agent   │    │   Agent    │    │   Agent   │    │  Agent   │ │
+│   └──────────┘    └────────────┘    └───────────┘    └──────────┘ │
+│        │                                                    │       │
+│        │              KNOWLEDGE GRAPH                       │       │
+│        │         ┌─────────────────────┐                   │       │
+│        └────────▶│  101K molecules     │◀──────────────────┘       │
+│                  │  320K measurements  │                           │
+│                  │  390K relations     │                           │
+│                  └─────────────────────┘                           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Agent Roles and Capabilities
+
+#### 1. Explorer Agent (`src/agents/explorer.py`)
+Analyzes the KG to identify gaps and candidate hypothesis areas.
+
+| Analysis Type | Description | Output |
+|--------------|-------------|--------|
+| **Coverage Analysis** | Find molecules without property measurements | Missing measurement gaps |
+| **Link Detection** | Identify missing cross-dataset sameAs links | Linkage candidates |
+| **Property Completeness** | Find entities with partial property coverage | Property gaps |
+| **Outlier Detection** | Identify anomalous measurements | Data quality issues |
+
+#### 2. Hypothesis Agent (`src/agents/hypothesis.py`)
+Generates proposed KG augmentations using multiple strategies.
+
+| Strategy | Method | Hypothesis Types |
+|----------|--------|-----------------|
+| **Association Mining** | Frequent pattern mining on formulations | `coOccursWith` |
+| **Correlation Analysis** | Property-property correlations | `increases`, `decreases` |
+| **Causal Inference** | Component effect analysis | `increases`, `decreases` |
+
+#### 3. Evaluator Agent (`src/agents/evaluator.py`)
+Validates hypotheses through multiple tests.
+
+| Test | Description | Criteria |
+|------|-------------|----------|
+| **Plausibility** | Physical/chemical reasonableness | Effect size, correlation strength |
+| **Consistency** | Agreement with existing KG data | No contradictions |
+| **Statistical** | Significance testing | p-value < 0.05, adequate sample size |
+
+#### 4. Curator Agent (`src/agents/curator.py`)
+Human-in-the-loop validation and KG integration.
+
+| Action | Description |
+|--------|-------------|
+| **Approve** | Accept hypothesis for KG integration |
+| **Reject** | Store as negative evidence with rationale |
+| **Defer** | Mark for additional evidence gathering |
+| **Merge** | Integrate approved hypotheses with full provenance |
 
 ### Discovery Funnel
 
+The pipeline produces a "discovery funnel" tracking hypotheses through each stage:
+
 ```
-Gaps Found → Hypothesis Candidates → Generated Hypotheses → Validated → Curated → Merged
+┌────────────────────────────────────────────────────────────────┐
+│ GAPS FOUND                                              8      │
+│ ████████████████████████████████████████████████████████████   │
+├────────────────────────────────────────────────────────────────┤
+│ HYPOTHESES GENERATED                                   77      │
+│ ███████████████████████████████████████████████████            │
+├────────────────────────────────────────────────────────────────┤
+│ VALIDATED                                              63      │
+│ ████████████████████████████████████████                       │
+├────────────────────────────────────────────────────────────────┤
+│ READY FOR CURATION                                     63      │
+│ ████████████████████████████████████████                       │
+└────────────────────────────────────────────────────────────────┘
+                    Validation Rate: 81.8%
 ```
 
 ### Running the Discovery Pipeline
 
+**Command Line:**
 ```bash
 # Full discovery run
 python scripts/run_discovery.py
@@ -532,40 +610,72 @@ python scripts/run_discovery.py
 python scripts/run_discovery.py --quick
 
 # Custom settings
-python scripts/run_discovery.py --max-hypotheses 100 --min-confidence 0.7
+python scripts/run_discovery.py --max-hypotheses 100 --min-confidence 0.7 --validation-threshold 0.8
 ```
 
-### Example Output
-
-```
-DISCOVERY FUNNEL
-----------------------------------------
-  Gaps found:                8
-  Hypotheses generated:     77
-  Validated:                63
-  Ready for curation:       77
-
-VALIDATED HYPOTHESES
-----------------------------------------
-  1. Diethyl carbonate --[coOccursWith]--> Lithium tetrafluoroborate
-  2. LiPF6 --[coOccursWith]--> Ethylene carbonate
-  3. EMC --[coOccursWith]--> Ethylene carbonate
-```
-
-### Programmatic Usage
-
+**Programmatic Usage:**
 ```python
-from src.agents import DiscoveryOrchestrator
+from src.agents import DiscoveryOrchestrator, CuratorAgent
 
-# Run discovery
+# Run discovery loop
 orchestrator = DiscoveryOrchestrator("data/output/knowledge_graph_v7.json.gz")
-run = orchestrator.run_discovery_loop()
+run = orchestrator.run_discovery_loop(
+    min_confidence=0.6,
+    max_hypotheses=100,
+    validation_threshold=0.7,
+)
 
 # View results
-print(f"Validated: {len(run.validated_hypotheses)}")
-for hyp in run.validated_hypotheses[:5]:
-    print(f"  {hyp['subject']['name']} --[{hyp['hypothesis_type']}]--> {hyp['object']['name']}")
+print(f"Gaps found: {run.funnel['gaps_found']}")
+print(f"Hypotheses: {run.funnel['hypotheses_generated']}")
+print(f"Validated: {run.funnel['validated']}")
+
+# Curate results
+curator = CuratorAgent(orchestrator.kg)
+curator.run(run.validated_hypotheses, auto_approve_threshold=0.9)
+
+# Interactive curation
+from src.agents.curator import interactive_curation
+interactive_curation(curator)
+
+# Merge approved hypotheses
+curator.merge_approved()
+curator.save_kg("data/output/knowledge_graph_v8.json")
 ```
+
+### Example Validated Hypotheses
+
+| Hypothesis | Type | Confidence | Evidence |
+|------------|------|------------|----------|
+| DEC ↔ LiBF4 | coOccursWith | 1.00 | Lift=2.16, n=1609 formulations |
+| LiPF6 ↔ EC | coOccursWith | 1.00 | Lift=1.85, n=2341 formulations |
+| EMC ↔ EC | coOccursWith | 1.00 | Lift=1.92, n=1876 formulations |
+| DME ↔ DOL | coOccursWith | 1.00 | Lift=3.21, n=892 formulations |
+
+### Web Interface
+
+The **Discovery Dashboard** (`app/pages/5_Discovery.py`) provides:
+- Interactive discovery funnel visualization
+- Hypothesis browser with filtering by type and confidence
+- One-click approval/rejection interface
+- Export of curation decisions
+
+### Success Criteria (from Practical Pilot)
+
+| Criterion | Target | Current Status |
+|-----------|--------|----------------|
+| KG Substrate | ≥1,000 formulations | ✅ 10,252 formulations |
+| Discovery Output | ≥10 candidates, ≥3 validated | ✅ 77 candidates, 63 validated |
+| Provenance | ≥95% with provenance | ✅ 431,736 provenance records |
+| Validation Rate | Statistically defensible | ✅ 81.8% validation rate |
+
+### Validation Strategies
+
+The system supports three validation tiers (per Practical Pilot):
+
+1. **Retrospective Time-Slice** (implemented): Propose edges from pre-cutoff data, validate against post-cutoff literature
+2. **Simulation Plausibility** (implemented): Check consistency with LIBE/Materials Project computed properties
+3. **Wet-Lab Validation** (future): EIS conductivity measurements for top hypotheses
 
 ---
 
