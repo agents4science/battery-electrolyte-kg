@@ -543,9 +543,9 @@ with col2:
                     if re.search(r'PMC\d+', ref):
                         # Convert PMC IDs to links
                         ref = re.sub(r'(PMC\d+)', r'[\1](https://www.ncbi.nlm.nih.gov/pmc/articles/\1/)', ref)
-                    # For vague references, link to the curated file
+                    # For vague references, link to the curated file with caveat
                     if ref.lower() in ["literature", "literature compilation"]:
-                        ref = f"[Curated properties file]({CURATED_FILE_URL})"
+                        ref = f"[Curated file]({CURATED_FILE_URL}) *(citation needed)*"
                     elif ref == "CRC Handbook":
                         ref = "[CRC Handbook of Chemistry and Physics](https://hbcp.chemnetbase.com/)"
                     elif ref == "NIST WebBook":

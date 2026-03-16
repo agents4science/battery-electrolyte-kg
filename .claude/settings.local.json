@@ -43,7 +43,13 @@
       "Bash(open \"https://battery-electrolyte-kg.streamlit.app\")",
       "WebFetch(domain:doi.org)",
       "WebFetch(domain:xlink.rsc.org)",
-      "WebFetch(domain:pubs.rsc.org)"
+      "WebFetch(domain:pubs.rsc.org)",
+      "Bash(gzip:*)",
+      "Bash(timeout 5 python3:*)",
+      "Bash(timeout 10 python3:*)",
+      "Bash(timeout 15 python3:*)",
+      "Bash(ls:*)",
+      "Bash(timeout 15 streamlit run:*)"
     ]
   }
 }

@@ -1,8 +1,11 @@
 {
   "_metadata": {
-    "description": "Curated electrochemical properties for common battery electrolyte solvents",
+    "description": "Curated electrochemical properties for common battery electrolyte solvents and salts",
+    "compiled_by": "AI-assisted curation (Claude + human review)",
     "compiled_date": "2024-07-15",
-    "notes": "Values from DFT calculations and experimental literature"
+    "last_updated": "2026-03-15",
+    "provenance_note": "Values compiled from scientific literature including DFT calculations, CRC Handbook, NIST WebBook, and primary research papers. Some entries have specific citations; entries marked 'Literature' lack precise citations and should be verified before use in publications.",
+    "repository": "https://github.com/agents4science/battery-electrolyte-kg"
   },
   "solvents": [
     {
