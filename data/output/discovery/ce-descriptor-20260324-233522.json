@@ -1,0 +1,1065 @@
+{
+  "run_id": "ce-descriptor-20260324-233522",
+  "timestamp": "2026-03-24T23:35:22.557422",
+  "kg_version": "0.7.0",
+  "target_property": "coulombic_efficiency",
+  "settings": {
+    "top_k": 120,
+    "min_samples": 12,
+    "min_abs_corr": 0.08,
+    "min_confidence": 0.6,
+    "min_component_support": 3,
+    "n_boot": 1000,
+    "seed": 42
+  },
+  "stats": {
+    "formulations_with_experimental_ce": 110,
+    "total_hypotheses": 45,
+    "by_type": {
+      "component_presence": 11,
+      "property": 0,
+      "computed_descriptor": 34
+    },
+    "by_direction": {
+      "increases": 24,
+      "decreases": 21
+    }
+  },
+  "hypotheses": [
+    {
+      "hypothesis_id": "desc-205688042359",
+      "descriptor_key": "desc:solvent:smiles_halogen_count_mean",
+      "descriptor_name": "Average halogen substitution index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 2.3422663146556357,
+      "evidence": {
+        "spearman_r": 0.49734606521961605,
+        "ci95": [
+          0.3457608351147434,
+          0.6275532205462485
+        ],
+        "sample_size": 110,
+        "x_mean": 1.0272727272727273,
+        "x_std": 1.6430950212486672,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average halogen substitution index (solvent components) increases coulombic_efficiency (rho=0.497, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-135422271781",
+      "descriptor_key": "desc:all:smiles_branch_token_count_mean",
+      "descriptor_name": "Average molecular branching index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.8521943185153216,
+      "evidence": {
+        "spearman_r": 0.39328642971632255,
+        "ci95": [
+          0.2160741217157568,
+          0.550351868393626
+        ],
+        "sample_size": 110,
+        "x_mean": 4.76060606060606,
+        "x_std": 1.7577429387572996,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of SMILES branch markers '()'; proxy for structural branching.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular branching index (all components) increases coulombic_efficiency (rho=0.393, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-776721793148",
+      "descriptor_key": "desc:salt:smiles_n_count_mean",
+      "descriptor_name": "Average nitrogen atom count index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.8189103020166926,
+      "evidence": {
+        "spearman_r": 0.3862190546118261,
+        "ci95": [
+          0.20485193845663704,
+          0.526341967100517
+        ],
+        "sample_size": 110,
+        "x_mean": 0.6090909090909091,
+        "x_std": 0.4879540691025325,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average nitrogen atom count index (salt components) increases coulombic_efficiency (rho=0.386, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-492422736039",
+      "descriptor_key": "desc:salt:smiles_s_count_mean",
+      "descriptor_name": "Average sulfur atom count index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.8189103020166926,
+      "evidence": {
+        "spearman_r": 0.3862190546118261,
+        "ci95": [
+          0.21838292485832336,
+          0.5326714594462482
+        ],
+        "sample_size": 110,
+        "x_mean": 1.2181818181818183,
+        "x_std": 0.975908138205065,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average sulfur atom count index (salt components) increases coulombic_efficiency (rho=0.386, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-079418949460",
+      "descriptor_key": "desc:salt:smiles_double_bond_count_mean",
+      "descriptor_name": "Average unsaturation (double-bond) index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.7944801680460898,
+      "evidence": {
+        "spearman_r": 0.3810316722347484,
+        "ci95": [
+          0.21456345344749744,
+          0.5297488289238601
+        ],
+        "sample_size": 110,
+        "x_mean": 2.4727272727272727,
+        "x_std": 1.924526345076253,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average unsaturation (double-bond) index (salt components) increases coulombic_efficiency (rho=0.381, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-734333445901",
+      "descriptor_key": "contains:78fa110c-db4e-4f51-8227-036d730b51c4",
+      "descriptor_name": "Presence of O=S(=O)(F)[N-]S(=O)(=O)F.[Li+] (salt)",
+      "descriptor_type": "component_presence",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.7040458639334741,
+      "evidence": {
+        "component_id": "78fa110c-db4e-4f51-8227-036d730b51c4",
+        "spearman_r": 0.4128883881533352,
+        "ci95": [
+          0.2381123888406047,
+          0.5520812827418902
+        ],
+        "sample_size": 110,
+        "support": 61,
+        "component_role": "salt",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of O=S(=O)(F)[N-]S(=O)(=O)F.[Li+] (salt) increases coulombic_efficiency (rho=0.413, conf=1.00, support=61)"
+    },
+    {
+      "hypothesis_id": "desc-980242029477",
+      "descriptor_key": "desc:all:smiles_ring_digit_count_mean",
+      "descriptor_name": "Average ring topology index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 1.6426649826910804,
+      "evidence": {
+        "spearman_r": -0.3487959334528407,
+        "ci95": [
+          -0.5034137454667179,
+          -0.16871737494051303
+        ],
+        "sample_size": 110,
+        "x_mean": 0.48030303030303034,
+        "x_std": 0.4350384971829749,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of ring-closure markers in SMILES; proxy for ring-rich structures.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average ring topology index (all components) decreases coulombic_efficiency (rho=-0.349, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-144374470953",
+      "descriptor_key": "desc:solvent:smiles_branch_token_count_mean",
+      "descriptor_name": "Average molecular branching index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.6399166081400347,
+      "evidence": {
+        "spearman_r": 0.3482123562310024,
+        "ci95": [
+          0.1789642903429953,
+          0.4976028509126757
+        ],
+        "sample_size": 110,
+        "x_mean": 2.4484848484848483,
+        "x_std": 2.845672370402015,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular branching index (solvent components) increases coulombic_efficiency (rho=0.348, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-787202060217",
+      "descriptor_key": "desc:solvent:smiles_o_count_mean",
+      "descriptor_name": "Average oxygen atom count index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 1.5999824411660475,
+      "evidence": {
+        "spearman_r": -0.33973291873575934,
+        "ci95": [
+          -0.49364526420532506,
+          -0.16248465389077665
+        ],
+        "sample_size": 110,
+        "x_mean": 2.4909090909090907,
+        "x_std": 0.999453477837663,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average oxygen atom count index (solvent components) decreases coulombic_efficiency (rho=-0.340, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-911762274394",
+      "descriptor_key": "desc:all:smiles_n_count_mean",
+      "descriptor_name": "Average nitrogen atom count index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.5714693761868015,
+      "evidence": {
+        "spearman_r": 0.3336785855516764,
+        "ci95": [
+          0.16208138199619607,
+          0.47975607893674954
+        ],
+        "sample_size": 110,
+        "x_mean": 0.2787878787878788,
+        "x_std": 0.25212139423070346,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of N tokens; proxy for nitrogen-containing motifs.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average nitrogen atom count index (all components) increases coulombic_efficiency (rho=0.334, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-315841030570",
+      "descriptor_key": "desc:all:smiles_s_count_mean",
+      "descriptor_name": "Average sulfur atom count index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.568610346032929,
+      "evidence": {
+        "spearman_r": 0.33307151222765874,
+        "ci95": [
+          0.15989099864404085,
+          0.4855524286550099
+        ],
+        "sample_size": 110,
+        "x_mean": 0.5666666666666667,
+        "x_std": 0.511089151921777,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of S tokens; proxy for sulfur-containing motifs.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average sulfur atom count index (all components) increases coulombic_efficiency (rho=0.333, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-509967617902",
+      "descriptor_key": "desc:solvent:smiles_ring_digit_count_mean",
+      "descriptor_name": "Average ring topology index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 1.5517272279942071,
+      "evidence": {
+        "spearman_r": -0.32948662853076316,
+        "ci95": [
+          -0.49713802761192977,
+          -0.14307619498760635
+        ],
+        "sample_size": 110,
+        "x_mean": 0.7515151515151515,
+        "x_std": 0.7127076888672043,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average ring topology index (solvent components) decreases coulombic_efficiency (rho=-0.329, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-962307950681",
+      "descriptor_key": "desc:solvent:smiles_len_mean",
+      "descriptor_name": "Average molecular graph string length (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 1.0,
+      "score": 1.4707490315149738,
+      "evidence": {
+        "spearman_r": 0.3122920904308337,
+        "ci95": [
+          0.11693766082663197,
+          0.47978124336700373
+        ],
+        "sample_size": 110,
+        "x_mean": 12.00909090909091,
+        "x_std": 6.1976631456124665,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular graph string length (solvent components) increases coulombic_efficiency (rho=0.312, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-582948865042",
+      "descriptor_key": "desc:solvent:smiles_double_bond_count_mean",
+      "descriptor_name": "Average unsaturation (double-bond) index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 1.3791175956714634,
+      "evidence": {
+        "spearman_r": -0.2928354924419352,
+        "ci95": [
+          -0.4597977670641995,
+          -0.10698194329966708
+        ],
+        "sample_size": 110,
+        "x_mean": 0.55,
+        "x_std": 0.6185475002786853,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average unsaturation (double-bond) index (solvent components) decreases coulombic_efficiency (rho=-0.293, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-675294677025",
+      "descriptor_key": "desc:salt:smiles_o_count_mean",
+      "descriptor_name": "Average oxygen atom count index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.997,
+      "score": 1.378696744462235,
+      "evidence": {
+        "spearman_r": 0.2936270118658136,
+        "ci95": [
+          0.13022304982776942,
+          0.457292791690347
+        ],
+        "sample_size": 110,
+        "x_mean": 2.618181818181818,
+        "x_std": 1.9020649935450211,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average oxygen atom count index (salt components) increases coulombic_efficiency (rho=0.294, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-118014904899",
+      "descriptor_key": "desc:all:smiles_len_mean",
+      "descriptor_name": "Average molecular graph string length (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.998,
+      "score": 1.331971843051953,
+      "evidence": {
+        "spearman_r": 0.28339156311826047,
+        "ci95": [
+          0.10353467719938028,
+          0.4445877364370361
+        ],
+        "sample_size": 110,
+        "x_mean": 18.746969696969696,
+        "x_std": 4.274394151539852,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Proxy for molecular size/complexity from SMILES length.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular graph string length (all components) increases coulombic_efficiency (rho=0.283, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-720717112564",
+      "descriptor_key": "desc:all:mw_mean",
+      "descriptor_name": "Mean molecular weight (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.982,
+      "score": 1.322308726203659,
+      "evidence": {
+        "spearman_r": -0.4132924082046644,
+        "ci95": [
+          -0.7006157051954287,
+          -0.03866343777946228
+        ],
+        "sample_size": 25,
+        "x_mean": 91.06800000000001,
+        "x_std": 4.641954545231999,
+        "ce_mean": 0.9117165333333334,
+        "descriptor_interpretation": "Average molecular weight (g/mol) across all components in the formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Mean molecular weight (all components) decreases coulombic_efficiency (rho=-0.413, conf=0.98, n=25)"
+    },
+    {
+      "hypothesis_id": "desc-899887686826",
+      "descriptor_key": "desc:solvent:mw_mean",
+      "descriptor_name": "Mean molecular weight (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.981,
+      "score": 1.320962179639297,
+      "evidence": {
+        "spearman_r": -0.4132924082046644,
+        "ci95": [
+          -0.698854999120171,
+          -0.017766732546041074
+        ],
+        "sample_size": 25,
+        "x_mean": 91.06800000000001,
+        "x_std": 4.641954545231999,
+        "ce_mean": 0.9117165333333334,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Mean molecular weight (solvent components) decreases coulombic_efficiency (rho=-0.413, conf=0.98, n=25)"
+    },
+    {
+      "hypothesis_id": "desc-588948513485",
+      "descriptor_key": "desc:salt:smiles_halogen_count_mean",
+      "descriptor_name": "Average halogen substitution index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.998,
+      "score": 1.2237211073485206,
+      "evidence": {
+        "spearman_r": -0.26036003631856003,
+        "ci95": [
+          -0.4337509553473349,
+          -0.060597691107512015
+        ],
+        "sample_size": 110,
+        "x_mean": 3.609090909090909,
+        "x_std": 2.0674774025167375,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average halogen substitution index (salt components) decreases coulombic_efficiency (rho=-0.260, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-601889249988",
+      "descriptor_key": "contains:c1e906c4-8073-4850-87e9-96c4ddd10728",
+      "descriptor_name": "Presence of Ethylene carbonate (component)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 1.131457633146055,
+      "evidence": {
+        "component_id": "c1e906c4-8073-4850-87e9-96c4ddd10728",
+        "spearman_r": -0.3560221738038272,
+        "ci95": [
+          -0.5066030666276589,
+          -0.17821996242172822
+        ],
+        "sample_size": 110,
+        "support": 23,
+        "component_role": "component",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of Ethylene carbonate (component) decreases coulombic_efficiency (rho=-0.356, conf=1.00, support=23)"
+    },
+    {
+      "hypothesis_id": "desc-397749866666",
+      "descriptor_key": "desc:all:smiles_double_bond_count_mean",
+      "descriptor_name": "Average unsaturation (double-bond) index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.994,
+      "score": 1.1080300447217817,
+      "evidence": {
+        "spearman_r": 0.23669417270968243,
+        "ci95": [
+          0.06542868191863625,
+          0.40932371042414045
+        ],
+        "sample_size": 110,
+        "x_mean": 1.3848484848484848,
+        "x_std": 0.8236545363348501,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Number of '=' tokens in SMILES; proxy for pi-bond unsaturation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average unsaturation (double-bond) index (all components) increases coulombic_efficiency (rho=0.237, conf=0.99, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-885163996516",
+      "descriptor_key": "desc:salt:smiles_ring_digit_count_mean",
+      "descriptor_name": "Average ring topology index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.993,
+      "score": 1.0889984122966323,
+      "evidence": {
+        "spearman_r": -0.23286295901847912,
+        "ci95": [
+          -0.33316796447046454,
+          -0.08907093484847221
+        ],
+        "sample_size": 110,
+        "x_mean": 0.06363636363636363,
+        "x_std": 0.30975863704365125,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average ring topology index (salt components) decreases coulombic_efficiency (rho=-0.233, conf=0.99, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-500230240758",
+      "descriptor_key": "desc:solvent:mw_max",
+      "descriptor_name": "Maximum molecular weight (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.974,
+      "score": 1.0602202674240881,
+      "evidence": {
+        "spearman_r": -0.3340974776022706,
+        "ci95": [
+          -0.6289272305805984,
+          5.66982116222093e-05
+        ],
+        "sample_size": 25,
+        "x_mean": 92.95360000000001,
+        "x_std": 7.155004335428456,
+        "ce_mean": 0.9117165333333334,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Maximum molecular weight (solvent components) decreases coulombic_efficiency (rho=-0.334, conf=0.97, n=25)"
+    },
+    {
+      "hypothesis_id": "desc-034124033038",
+      "descriptor_key": "desc:salt:smiles_p_count_mean",
+      "descriptor_name": "Average phosphorus atom count index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.997,
+      "score": 1.0461581033758347,
+      "evidence": {
+        "spearman_r": -0.22280481843980124,
+        "ci95": [
+          -0.3831212079782238,
+          -0.05993813949369683
+        ],
+        "sample_size": 110,
+        "x_mean": 0.23636363636363636,
+        "x_std": 0.4248480525653791,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average phosphorus atom count index (salt components) decreases coulombic_efficiency (rho=-0.223, conf=1.00, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-993993221639",
+      "descriptor_key": "desc:all:mw_max",
+      "descriptor_name": "Maximum molecular weight (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.961,
+      "score": 1.0460694835672983,
+      "evidence": {
+        "spearman_r": -0.3340974776022706,
+        "ci95": [
+          -0.6327399075758008,
+          0.03773634326146338
+        ],
+        "sample_size": 25,
+        "x_mean": 92.95360000000001,
+        "x_std": 7.155004335428456,
+        "ce_mean": 0.9117165333333334,
+        "descriptor_interpretation": "Largest molecular weight (g/mol) among all components in the formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Maximum molecular weight (all components) decreases coulombic_efficiency (rho=-0.334, conf=0.96, n=25)"
+    },
+    {
+      "hypothesis_id": "desc-889707005141",
+      "descriptor_key": "desc:all:smiles_halogen_count_mean",
+      "descriptor_name": "Average halogen substitution index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.983,
+      "score": 0.9718293624317732,
+      "evidence": {
+        "spearman_r": 0.20992246257873184,
+        "ci95": [
+          0.018129451524290796,
+          0.38359028081206736
+        ],
+        "sample_size": 110,
+        "x_mean": 2.000757575757576,
+        "x_std": 1.0126407780012074,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of F/Cl/Br/I tokens; proxy for halogenation level.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average halogen substitution index (all components) increases coulombic_efficiency (rho=0.210, conf=0.98, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-224566451161",
+      "descriptor_key": "desc:all:smiles_p_count_mean",
+      "descriptor_name": "Average phosphorus atom count index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.991,
+      "score": 0.9576858677930297,
+      "evidence": {
+        "spearman_r": -0.20519739259398087,
+        "ci95": [
+          -0.35357209661818806,
+          -0.03823700141728823
+        ],
+        "sample_size": 110,
+        "x_mean": 0.08484848484848484,
+        "x_std": 0.1528276485930213,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Count of P tokens; proxy for phosphorus-containing motifs.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average phosphorus atom count index (all components) decreases coulombic_efficiency (rho=-0.205, conf=0.99, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-351226720735",
+      "descriptor_key": "desc:salt:smiles_len_mean",
+      "descriptor_name": "Average molecular graph string length (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.978,
+      "score": 0.9316098566836923,
+      "evidence": {
+        "spearman_r": 0.20226355388103467,
+        "ci95": [
+          0.00796568753394393,
+          0.39533334568031636
+        ],
+        "sample_size": 110,
+        "x_mean": 28.90909090909091,
+        "x_std": 5.146129091666782,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular graph string length (salt components) increases coulombic_efficiency (rho=0.202, conf=0.98, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-048852319472",
+      "descriptor_key": "desc:solvent:smiles_s_count_mean",
+      "descriptor_name": "Average sulfur atom count index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.984,
+      "score": 0.8740735981942916,
+      "evidence": {
+        "spearman_r": 0.18861460465402552,
+        "ci95": [
+          0.01863515901042865,
+          0.3328586039570265
+        ],
+        "sample_size": 110,
+        "x_mean": 0.09545454545454546,
+        "x_std": 0.3197687697629374,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average sulfur atom count index (solvent components) increases coulombic_efficiency (rho=0.189, conf=0.98, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-439751915313",
+      "descriptor_key": "desc:all:smiles_aromatic_ratio_mean",
+      "descriptor_name": "Average aromatic character index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.994,
+      "score": 0.785116223461623,
+      "evidence": {
+        "spearman_r": -0.1677142563763785,
+        "ci95": [
+          -0.3000126634970921,
+          -0.028870032745861123
+        ],
+        "sample_size": 110,
+        "x_mean": 0.006595117845117846,
+        "x_std": 0.03219859533538261,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Fraction of aromatic tokens in SMILES; proxy for aromaticity.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average aromatic character index (all components) decreases coulombic_efficiency (rho=-0.168, conf=0.99, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-152220206716",
+      "descriptor_key": "contains:3044224c-0b65-44f7-86d9-b538acbddefa",
+      "descriptor_name": "Presence of F[P-](F)(F)(F)(F)F.[Li+] (salt)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 0.997,
+      "score": 0.7321253495336862,
+      "evidence": {
+        "component_id": "3044224c-0b65-44f7-86d9-b538acbddefa",
+        "spearman_r": -0.22280481843980124,
+        "ci95": [
+          -0.3839740212137172,
+          -0.061336396169324535
+        ],
+        "sample_size": 110,
+        "support": 26,
+        "component_role": "salt",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of F[P-](F)(F)(F)(F)F.[Li+] (salt) decreases coulombic_efficiency (rho=-0.223, conf=1.00, support=26)"
+    },
+    {
+      "hypothesis_id": "comp-699075638329",
+      "descriptor_key": "contains:46c6b864-e3c3-4429-9c11-cdd467fe208a",
+      "descriptor_name": "Presence of Diethyl carbonate (component)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 1.0,
+      "score": 0.71763060079178,
+      "evidence": {
+        "component_id": "46c6b864-e3c3-4429-9c11-cdd467fe208a",
+        "spearman_r": -0.2887957987689415,
+        "ci95": [
+          -0.4216783932686826,
+          -0.12697593257228715
+        ],
+        "sample_size": 110,
+        "support": 11,
+        "component_role": "component",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of Diethyl carbonate (component) decreases coulombic_efficiency (rho=-0.289, conf=1.00, support=11)"
+    },
+    {
+      "hypothesis_id": "desc-228427571993",
+      "descriptor_key": "desc:salt:smiles_aromatic_ratio_mean",
+      "descriptor_name": "Average aromatic character index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "decreases",
+      "confidence": 0.989,
+      "score": 0.6718143890352537,
+      "evidence": {
+        "spearman_r": -0.144236582408329,
+        "ci95": [
+          -0.26963706198929455,
+          -0.01254276808057773
+        ],
+        "sample_size": 110,
+        "x_mean": 0.004363636363636364,
+        "x_std": 0.012470129599623452,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average aromatic character index (salt components) decreases coulombic_efficiency (rho=-0.144, conf=0.99, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-307227003958",
+      "descriptor_key": "desc:solvent:smiles_triple_bond_count_mean",
+      "descriptor_name": "Average triple-bond index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.873,
+      "score": 0.5376185205306364,
+      "evidence": {
+        "spearman_r": 0.1307622519922643,
+        "ci95": [
+          0.0,
+          0.24013074722724292
+        ],
+        "sample_size": 110,
+        "x_mean": 0.00909090909090909,
+        "x_std": 0.06680426571226848,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average triple-bond index (solvent components) increases coulombic_efficiency (rho=0.131, conf=0.87, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-920917964050",
+      "descriptor_key": "desc:all:smiles_triple_bond_count_mean",
+      "descriptor_name": "Average triple-bond index (all components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.866,
+      "score": 0.5333077191059922,
+      "evidence": {
+        "spearman_r": 0.1307622519922643,
+        "ci95": [
+          0.0,
+          0.23480591877607934
+        ],
+        "sample_size": 110,
+        "x_mean": 0.006060606060606061,
+        "x_std": 0.04453617714151232,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Number of '#' tokens in SMILES; proxy for strong unsaturation motifs.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average triple-bond index (all components) increases coulombic_efficiency (rho=0.131, conf=0.87, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-412361395879",
+      "descriptor_key": "contains:97909221-18b4-46dc-8cb4-c026505336bb",
+      "descriptor_name": "Presence of FC(F)(F)COCC(F)(F)F (solvent)",
+      "descriptor_type": "component_presence",
+      "direction": "increases",
+      "confidence": 0.995,
+      "score": 0.5012978958408728,
+      "evidence": {
+        "component_id": "97909221-18b4-46dc-8cb4-c026505336bb",
+        "spearman_r": 0.281185610790524,
+        "ci95": [
+          0.1388087716412512,
+          0.40023076883750625
+        ],
+        "sample_size": 110,
+        "support": 5,
+        "component_role": "solvent",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of FC(F)(F)COCC(F)(F)F (solvent) increases coulombic_efficiency (rho=0.281, conf=0.99, support=5)"
+    },
+    {
+      "hypothesis_id": "comp-061483006510",
+      "descriptor_key": "contains:54e7f890-61a0-49a0-a68e-b74ef69919c6",
+      "descriptor_name": "Presence of Ethyl methyl carbonate (component)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 0.993,
+      "score": 0.45870134035395804,
+      "evidence": {
+        "component_id": "54e7f890-61a0-49a0-a68e-b74ef69919c6",
+        "spearman_r": -0.2578107678397225,
+        "ci95": [
+          -0.3658568770831489,
+          -0.11020779140894287
+        ],
+        "sample_size": 110,
+        "support": 5,
+        "component_role": "component",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of Ethyl methyl carbonate (component) decreases coulombic_efficiency (rho=-0.258, conf=0.99, support=5)"
+    },
+    {
+      "hypothesis_id": "desc-812839654518",
+      "descriptor_key": "desc:solvent:smiles_n_count_mean",
+      "descriptor_name": "Average nitrogen atom count index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.884,
+      "score": 0.4298945354755723,
+      "evidence": {
+        "spearman_r": 0.10325998875011767,
+        "ci95": [
+          -0.08796057838923894,
+          0.24497819039637642
+        ],
+        "sample_size": 110,
+        "x_mean": 0.03636363636363636,
+        "x_std": 0.1746306610208959,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average nitrogen atom count index (solvent components) increases coulombic_efficiency (rho=0.103, conf=0.88, n=110)"
+    },
+    {
+      "hypothesis_id": "desc-941636199684",
+      "descriptor_key": "desc:salt:smiles_branch_token_count_mean",
+      "descriptor_name": "Average molecular branching index (salt components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.792,
+      "score": 0.37408468004569784,
+      "evidence": {
+        "spearman_r": 0.10029219928141109,
+        "ci95": [
+          -0.1475396654358941,
+          0.31698976962956754
+        ],
+        "sample_size": 110,
+        "x_mean": 8.327272727272728,
+        "x_std": 2.4200266373781587,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using salt components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average molecular branching index (salt components) increases coulombic_efficiency (rho=0.100, conf=0.79, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-065601014237",
+      "descriptor_key": "contains:05c6322c-c8ab-43d5-b063-487dd007bf43",
+      "descriptor_name": "Presence of FC(F)C(F)(F)COC(F)(F)C(F)F (solvent)",
+      "descriptor_type": "component_presence",
+      "direction": "increases",
+      "confidence": 0.993,
+      "score": 0.36799008393644583,
+      "evidence": {
+        "component_id": "05c6322c-c8ab-43d5-b063-487dd007bf43",
+        "spearman_r": 0.19044259228947125,
+        "ci95": [
+          0.04743332235655959,
+          0.3204622328066874
+        ],
+        "sample_size": 110,
+        "support": 6,
+        "component_role": "solvent",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of FC(F)C(F)(F)COC(F)(F)C(F)F (solvent) increases coulombic_efficiency (rho=0.190, conf=0.99, support=6)"
+    },
+    {
+      "hypothesis_id": "comp-738042062916",
+      "descriptor_key": "contains:1fafe423-e2a4-4cb4-a539-8efed575d541",
+      "descriptor_name": "Presence of LiAsF6 (salt)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 0.988,
+      "score": 0.3655200150182432,
+      "evidence": {
+        "component_id": "1fafe423-e2a4-4cb4-a539-8efed575d541",
+        "spearman_r": -0.144236582408329,
+        "ci95": [
+          -0.26275273392208803,
+          -0.012174582917111777
+        ],
+        "sample_size": 110,
+        "support": 12,
+        "component_role": "salt",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of LiAsF6 (salt) decreases coulombic_efficiency (rho=-0.144, conf=0.99, support=12)"
+    },
+    {
+      "hypothesis_id": "desc-162259526882",
+      "descriptor_key": "desc:solvent:smiles_p_count_mean",
+      "descriptor_name": "Average phosphorus atom count index (solvent components)",
+      "descriptor_type": "computed_descriptor",
+      "direction": "increases",
+      "confidence": 0.644,
+      "score": 0.2974493317876766,
+      "evidence": {
+        "spearman_r": 0.09807301888882623,
+        "ci95": [
+          0.0,
+          0.1899416545220702
+        ],
+        "sample_size": 110,
+        "x_mean": 0.004545454545454545,
+        "x_std": 0.047455938676866136,
+        "ce_mean": 0.9364444545454544,
+        "descriptor_interpretation": "Descriptor computed using solvent components within each formulation.",
+        "method": "bootstrap_spearman"
+      },
+      "explanation": "Average phosphorus atom count index (solvent components) increases coulombic_efficiency (rho=0.098, conf=0.64, n=110)"
+    },
+    {
+      "hypothesis_id": "comp-277770393078",
+      "descriptor_key": "contains:646559ef-dda9-4128-aa28-781c990d36d9",
+      "descriptor_name": "Presence of LiClO4 (salt)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 0.953,
+      "score": 0.29387713592128645,
+      "evidence": {
+        "component_id": "646559ef-dda9-4128-aa28-781c990d36d9",
+        "spearman_r": -0.22244233296132834,
+        "ci95": [
+          -0.3364072828742835,
+          0.0
+        ],
+        "sample_size": 110,
+        "support": 3,
+        "component_role": "salt",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of LiClO4 (salt) decreases coulombic_efficiency (rho=-0.222, conf=0.95, support=3)"
+    },
+    {
+      "hypothesis_id": "comp-851563043892",
+      "descriptor_key": "contains:3d5fce9e-b57b-44cb-a8c2-b959ac78a0df",
+      "descriptor_name": "Presence of O=C1OCC(F)O1 (solvent)",
+      "descriptor_type": "component_presence",
+      "direction": "increases",
+      "confidence": 0.915,
+      "score": 0.26677743423656086,
+      "evidence": {
+        "component_id": "3d5fce9e-b57b-44cb-a8c2-b959ac78a0df",
+        "spearman_r": 0.10515805502572893,
+        "ci95": [
+          -0.041745075063244826,
+          0.24584135361971754
+        ],
+        "sample_size": 110,
+        "support": 15,
+        "component_role": "solvent",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of O=C1OCC(F)O1 (solvent) increases coulombic_efficiency (rho=0.105, conf=0.92, support=15)"
+    },
+    {
+      "hypothesis_id": "comp-308162231152",
+      "descriptor_key": "contains:3cfbb991-221d-4f91-b6c3-6dd4cedfb6fb",
+      "descriptor_name": "Presence of Propylene carbonate (component)",
+      "descriptor_type": "component_presence",
+      "direction": "decreases",
+      "confidence": 0.954,
+      "score": 0.2546506953265563,
+      "evidence": {
+        "component_id": "3cfbb991-221d-4f91-b6c3-6dd4cedfb6fb",
+        "spearman_r": -0.19254889691118932,
+        "ci95": [
+          -0.3245590456234704,
+          0.0
+        ],
+        "sample_size": 110,
+        "support": 3,
+        "component_role": "component",
+        "descriptor_interpretation": "Binary presence/absence of this component in a formulation.",
+        "method": "bootstrap_spearman_binary"
+      },
+      "explanation": "Presence of Propylene carbonate (component) decreases coulombic_efficiency (rho=-0.193, conf=0.95, support=3)"
+    }
+  ]
+}
